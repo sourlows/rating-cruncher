@@ -10,6 +10,7 @@
     <title>Dashboard Template for Bootstrap</title>
     <link href="../static/css/styles.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular.min.js"></script>
+    <script src="../static/js/angular-ui-router.js"></script>
     <script src="../static/js/authapp.js"></script>
   </head>
 
@@ -62,7 +63,7 @@
             <li><a href="">Another nav item</a></li>
           </ul>
         </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" ui-view>
           <h1 class="page-header">Dashboard</h1>
 
           <div class="row placeholders">
