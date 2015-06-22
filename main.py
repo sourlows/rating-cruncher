@@ -3,6 +3,7 @@
 # Import the Flask Framework
 from flask import Flask
 from flask import render_template
+from google.appengine.api import users
 app = Flask(__name__)
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
@@ -11,7 +12,12 @@ app = Flask(__name__)
 @app.route('/')
 def hello():
     """Return a friendly HTTP greeting."""
-    return render_template("index.html")
+    is_logged_in = bool(users.get_current_user())
+    context = {
+        'login_url': users.create_login_url('/'),
+        'is_logged_in': is_logged_in,
+    }
+    return render_template("index.html", **context)
 
 
 @app.errorhandler(404)
