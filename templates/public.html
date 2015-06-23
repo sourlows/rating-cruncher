@@ -1,0 +1,17 @@
+{% extends "global.html" %}
+{% block content %}
+<div class="starter-template">
+    <h1>Rating Cruncher</h1>
+
+    <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a
+        mostly barebones HTML document.</p>
+
+    <p>
+        {% if is_logged_in %}
+            You are logged in.
+        {% else %}
+            You are not logged in.
+        {% endif %}
+    </p>
+</div>
+{% endblock %}
