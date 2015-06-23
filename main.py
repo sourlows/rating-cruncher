@@ -13,8 +13,9 @@ app = Flask(__name__)
 def hello():
     """Return a friendly HTTP greeting."""
     is_logged_in = bool(users.get_current_user())
+    auth_url = users.create_logout_url('/') if is_logged_in else users.create_login_url('/')
     context = {
-        'login_url': users.create_login_url('/'),
+        'auth_url': auth_url,
         'is_logged_in': is_logged_in,
     }
     return render_template("index.html", **context)

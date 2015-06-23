@@ -1,40 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+{% extends "global.html" %}
+{% block content %}
+<div class="starter-template">
+    <h1>Rating Cruncher</h1>
 
-    <title>Dashboard Template for Bootstrap</title>
-    <link href="../static/css/styles.css" rel="stylesheet">
-</head>
+    <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a
+        mostly barebones HTML document.</p>
 
-<body>
-
-{% include 'menu.html' %}
-
-<div class="container">
-
-    <div class="starter-template">
-        <h1>Rating Cruncher</h1>
-
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a
-            mostly barebones HTML document.</p>
-
-        <p>
-            {% if is_logged_in %}
-                You are logged in.
-            {% else %}
-                You are not logged in.
-            {% endif %}
-        </p>
-    </div>
-
+    <p>
+        {% if is_logged_in %}
+            You are logged in.
+        {% else %}
+            You are not logged in.
+        {% endif %}
+    </p>
 </div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/js/bootstrap.min.js"></script>
-</body>
-</html>
+{% endblock %}
