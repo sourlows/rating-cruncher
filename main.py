@@ -4,15 +4,32 @@
 from flask import Flask
 from flask import render_template
 from google.appengine.api import users
+from models.user import User, create_user
+
 app = Flask(__name__)
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
 
 
+def get_user():
+    session_user = users.get_current_user()
+
+    if session_user:
+        user_id = session_user.user_id()
+        existing_user = User.build_key(user_id=user_id).get()
+        if not existing_user:
+            existing_user = create_user(user_id)
+        return existing_user
+
+    return None
+
+
+
 @app.route('/')
 def index():
     """Return a friendly HTTP greeting."""
-    is_logged_in = bool(users.get_current_user())
+    user = get_user()
+    is_logged_in = bool(user)
     auth_url = users.create_logout_url('/') if is_logged_in else users.create_login_url('/')
     context = {
         'auth_url': auth_url,
