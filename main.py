@@ -1,7 +1,7 @@
 """`main` is the top level module for your Flask application."""
 
 # Import the Flask Framework
-from flask import Flask
+from flask import Flask, g
 from flask import render_template
 from google.appengine.api import users
 from models.user import User, create_user
@@ -9,11 +9,19 @@ from models.user import User, create_user
 app = Flask(__name__)
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
+@app.before_request
+def before_request(*args, **kwargs):
+    g.user = get_user()
+    g.is_logged_in = bool(g.user)
+    g.auth_url = users.create_logout_url('/') if g.is_logged_in else users.create_login_url('/dashboard')
+    g.context = {
+        'auth_url': g.auth_url,
+        'is_logged_in': g.is_logged_in,
+    }
 
 
 def get_user():
     session_user = users.get_current_user()
-
     if session_user:
         user_id = session_user.user_id()
         existing_user = User.build_key(user_id=user_id).get()
@@ -28,14 +36,13 @@ def get_user():
 @app.route('/')
 def index():
     """Return a friendly HTTP greeting."""
-    user = get_user()
-    is_logged_in = bool(user)
-    auth_url = users.create_logout_url('/') if is_logged_in else users.create_login_url('/')
-    context = {
-        'auth_url': auth_url,
-        'is_logged_in': is_logged_in,
-    }
-    return render_template("public.html", **context)
+    g.context['name'] = g.user.name
+    return render_template("public.html", **g.context)
+
+
+@app.route('/dashboard')
+def user_dashboard():
+    return render_template("dashboard.html", **g.context)
 
 
 @app.errorhandler(404)
