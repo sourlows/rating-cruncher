@@ -9,6 +9,8 @@ from models.user import User, create_user
 app = Flask(__name__)
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
+
+
 @app.before_request
 def before_request(*args, **kwargs):
     g.user = get_user()
@@ -28,9 +30,7 @@ def get_user():
         if not existing_user:
             existing_user = create_user(user_id)
         return existing_user
-
     return None
-
 
 
 @app.route('/')
