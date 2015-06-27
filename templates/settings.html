@@ -1,0 +1,11 @@
+{% extends "global.html" %}
+{% from "_formhelpers.html" import render_field %}
+{% block content %}
+<form method=post action="/settings">
+  <dl>
+    {{ render_field(form.first_name) }}
+    {{ render_field(form.last_name) }}
+  </dl>
+  <p><input type=submit value=Submit>
+</form>
+{% endblock %}
