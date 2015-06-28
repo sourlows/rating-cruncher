@@ -31,7 +31,7 @@ def update_user(user_id, name=None, company_name=None):
     if not existing_user:
         raise ValueError("There is no user for user_id %s" % user_id)
 
-    existing_user.first_name = name
-    existing_user.last_name = company_name
+    existing_user.name = name
+    existing_user.company_name = company_name
     existing_user.put()
     return

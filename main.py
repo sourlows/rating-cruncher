@@ -44,7 +44,7 @@ def index():
 def user_dashboard():
     if not g.is_logged_in:
         return redirect(g.auth_url)
-    
+
     return render_template("dashboard.html", **g.context)
 
 
