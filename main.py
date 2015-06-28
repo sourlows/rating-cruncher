@@ -1,8 +1,7 @@
 """`main` is the top level module for your Flask application."""
 
 # Import the Flask Framework
-from flask import Flask, g, request
-from flask import render_template, redirect, url_for
+from flask import Flask, g, request, render_template, redirect, url_for
 from google.appengine.api import users
 from forms.settings_form import SettingsForm
 from models.user import User, create_user, update_user
@@ -31,6 +30,7 @@ def get_user():
         if not existing_user:
             existing_user = create_user(user_id)
         return existing_user
+
     return None
 
 
@@ -49,8 +49,9 @@ def user_dashboard():
 def settings():
     form = SettingsForm(request.form, obj=g.user)
     if request.method == 'POST' and form.validate():
-        update_user(g.user.user_id, form.first_name.data, form.last_name.data)
+        update_user(g.user.user_id, form.name.data, form.company_name.data)
         return redirect(url_for('settings'))
+
     return render_template('settings.html', form=form, **g.context)
 
 
