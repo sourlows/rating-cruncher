@@ -1,14 +1,16 @@
 """`main` is the top level module for your Flask application."""
 
 # Import the Flask Framework
-from flask import Flask, g
-from flask import render_template
+from flask import Flask, g, request, render_template, redirect, url_for
 from google.appengine.api import users
-from models.user import User, create_user
+from forms.settings_form import SettingsForm
+from models.user import User, create_user, update_user
 
 app = Flask(__name__)
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
+
+
 @app.before_request
 def before_request(*args, **kwargs):
     g.user = get_user()
@@ -32,17 +34,31 @@ def get_user():
     return None
 
 
-
 @app.route('/')
 def index():
     """Return a friendly HTTP greeting."""
-    g.context['name'] = g.user.name
     return render_template("public.html", **g.context)
 
 
 @app.route('/dashboard')
 def user_dashboard():
+    if not g.is_logged_in:
+        return redirect(g.auth_url)
+
     return render_template("dashboard.html", **g.context)
+
+
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    if not g.is_logged_in:
+        return redirect(g.auth_url)
+
+    form = SettingsForm(request.form, obj=g.user)
+    if request.method == 'POST' and form.validate():
+        update_user(g.user.user_id, form.name.data, form.company_name.data)
+        return redirect(url_for('settings'))
+
+    return render_template('settings.html', form=form, **g.context)
 
 
 @app.errorhandler(404)
