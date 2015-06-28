@@ -1,12 +1,10 @@
 {% macro render_field(field) %}
-  <dt>{{ field.label }}
-  <dd>{{ field(**kwargs)|safe }}
+  <div class="input-group col-md-4 col-md-offset-4">
+  {{ field(type_='text', **{'class':'form-control', 'placeholder':field.label.text, 'aria-describedby':'basic-addon1'}) }}
   {% if field.errors %}
-    <ul class=errors>
-    {% for error in field.errors %}
-      <li>{{ error }}</li>
-    {% endfor %}
-    </ul>
+        {% for e in field.errors %}
+            <p class="help-block">{{ e }}</p>
+        {% endfor %}
   {% endif %}
-  </dd>
+  </div>
 {% endmacro %}
