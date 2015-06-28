@@ -8,7 +8,7 @@ class User(BaseModel):
 
     user_id = ndb.StringProperty(required=True)
     name = ndb.StringProperty(indexed=False)
-    company_name = ndb.StringProperty(indexed=False)
+    company_name = ndb.StringProperty()
 
 
 def create_user(user_id, name=None, company_name=None):
