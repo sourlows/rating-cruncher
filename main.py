@@ -42,11 +42,17 @@ def index():
 
 @app.route('/dashboard')
 def user_dashboard():
+    if not g.is_logged_in:
+        return redirect(g.auth_url)
+    
     return render_template("dashboard.html", **g.context)
 
 
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():
+    if not g.is_logged_in:
+        return redirect(g.auth_url)
+
     form = SettingsForm(request.form, obj=g.user)
     if request.method == 'POST' and form.validate():
         update_user(g.user.user_id, form.name.data, form.company_name.data)
