@@ -5,7 +5,7 @@ from flask import Flask, g, request, render_template, redirect, url_for
 from google.appengine.api import users
 from forms.league_form import LeagueForm
 from forms.settings_form import SettingsForm
-from models.league import create_league
+from models.league import create_league, League
 from models.user import User, create_user, update_user
 
 app = Flask(__name__)
@@ -62,6 +62,7 @@ def settings():
 
     return render_template('settings.html', form=form, **g.context)
 
+
 @app.route('/league/')
 @app.route('/league/create', methods=['GET', 'POST'])
 def league_form():
@@ -75,6 +76,14 @@ def league_form():
 
     return render_template('league_form.html', form=form, **g.context)
 
+
+@app.route('/leagues')
+def display_leagues():
+    if not g.is_logged_in:
+        return redirect(g.auth_url)
+
+    leagues = League.query(ancestor=g.user.key).fetch()
+    return render_template('leagues.html', leagues=leagues, **g.context)
 
 
 @app.errorhandler(404)
