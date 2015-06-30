@@ -3,7 +3,9 @@
 # Import the Flask Framework
 from flask import Flask, g, request, render_template, redirect, url_for
 from google.appengine.api import users
+from forms.create_league import CreateLeagueForm
 from forms.settings_form import SettingsForm
+from models.league import create_league
 from models.user import User, create_user, update_user
 
 app = Flask(__name__)
@@ -59,6 +61,20 @@ def settings():
         return redirect(url_for('settings'))
 
     return render_template('settings.html', form=form, **g.context)
+
+@app.route('/league/')
+@app.route('/league/create', methods=['GET', 'POST'])
+def league_create():
+    if not g.is_logged_in:
+        return redirect(g.auth_url)
+
+    form = CreateLeagueForm(request.form)
+    if request.method == 'POST' and form.validate():
+        create_league(g.user, form.name.data, form.rating_scheme.data, form.description.data)
+        return redirect(url_for('league_create'))
+
+    return render_template('create_league.html', form=form, **g.context)
+
 
 
 @app.errorhandler(404)
