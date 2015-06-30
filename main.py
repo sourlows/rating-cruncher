@@ -63,8 +63,16 @@ def settings():
     return render_template('settings.html', form=form, **g.context)
 
 
-@app.route('/league/')
-@app.route('/league/create', methods=['GET', 'POST'])
+@app.route('/leagues/')
+def display_leagues():
+    if not g.is_logged_in:
+        return redirect(g.auth_url)
+
+    leagues = League.query(ancestor=g.user.key).fetch()
+    return render_template('leagues.html', leagues=leagues, **g.context)
+
+
+@app.route('/leagues/create', methods=['GET', 'POST'])
 def league_form():
     if not g.is_logged_in:
         return redirect(g.auth_url)
@@ -74,16 +82,7 @@ def league_form():
         create_league(g.user, form.name.data, form.rating_scheme.data, form.description.data)
         return redirect(url_for('league_form'))
 
-    return render_template('league_form.html', form=form, **g.context)
-
-
-@app.route('/leagues')
-def display_leagues():
-    if not g.is_logged_in:
-        return redirect(g.auth_url)
-
-    leagues = League.query(ancestor=g.user.key).fetch()
-    return render_template('leagues.html', leagues=leagues, **g.context)
+    return render_template('create_league.html', form=form, **g.context)
 
 
 @app.errorhandler(404)
