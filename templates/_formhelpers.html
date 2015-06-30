@@ -1,5 +1,6 @@
 {% macro render_field(field) %}
-  <div class="input-group">
+  <div class="form-group">
+  {{ field.label }}
   {{ field(type_='text', **{'class':'form-control', 'placeholder':field.label.text, 'aria-describedby':'basic-addon1'}) }}
   {% if field.errors %}
         {% for e in field.errors %}

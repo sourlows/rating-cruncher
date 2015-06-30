@@ -1,12 +1,13 @@
 {% extends "global.html" %}
 {% from "_formhelpers.html" import render_field %}
 {% block content %}
-<div class="container col-md-4 col-md-offset-4">
+<div class="container col-md-6">
+<h2>Create League</h2>
 <form method=post action="/league/create">
   {{ render_field(form.name) }}
   {{ render_field(form.rating_scheme) }}
   {{ render_field(form.description) }}
-  <button type="submit" class="btn btn-primary">Submit</button>
+  <button type="submit" class="btn btn-default">Submit</button>
 </form>
 </div>
 {% endblock %}
