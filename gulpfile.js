@@ -4,8 +4,8 @@ var minifyCSS = require('gulp-minify-css');
 
 // Compiles LESS > CSS
 gulp.task('build-less', function(){
-    return gulp.src('./static/css/less/styles.less')
+    return gulp.src('./src/static/css/less/styles.less')
         .pipe(less())
         .pipe(minifyCSS({advanced: true, keepSpecialComments: 0}))
-        .pipe(gulp.dest('./static/css'));
+        .pipe(gulp.dest('./src/static/css'));
 });
