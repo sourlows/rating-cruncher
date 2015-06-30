@@ -1,5 +1,5 @@
 *.pyc
 .DS_Store
-.idea/
 app.yaml
 node_modules
+.idea
