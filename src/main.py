@@ -2,7 +2,7 @@
 
 # Import the Flask Framework
 from functools import wraps
-from flask import Flask, g, request, render_template, redirect, url_for
+from flask import Flask, g, render_template, redirect
 from google.appengine.api import users
 from app.user.views import get_authed_user, user_module
 from app.league.views import league_module
@@ -35,23 +35,10 @@ def before_request(*args, **kwargs):
     }
 
 
-
-
-
 @app.route('/')
 def index():
     """Return a friendly HTTP greeting."""
     return render_template("public.html", **g.context)
-
-
-
-
-
-
-
-
-
-
 
 
 @app.errorhandler(404)
