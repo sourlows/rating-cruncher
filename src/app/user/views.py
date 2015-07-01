@@ -37,6 +37,7 @@ def settings():
         update_user(g.user.user_id, form.name.data, form.company_name.data)
         return redirect(url_for('user.settings'))
 
+    g.context['api_key'] = g.user.api_key
     return render_template('user/settings.html', form=form, **g.context)
 
 
