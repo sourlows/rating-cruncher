@@ -1,6 +1,7 @@
 """`main` is the top level module for your Flask application."""
 
 # Import the Flask Framework
+from functools import wraps
 from flask import Flask, g, request, render_template, redirect, url_for
 from google.appengine.api import users
 from forms.league_form import LeagueForm
@@ -11,6 +12,16 @@ from models.user import User, create_user, update_user
 app = Flask(__name__)
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
+
+
+def login_required(func):
+    """Requires standard login credentials"""
+    @wraps(func)
+    def decorated_view(*args, **kwargs):
+        if not users.get_current_user():
+            return redirect(g.auth_url)
+        return func(*args, **kwargs)
+    return decorated_view
 
 
 @app.before_request
@@ -43,6 +54,7 @@ def index():
 
 
 @app.route('/dashboard/')
+@login_required
 def user_dashboard():
     if not g.is_logged_in:
         return redirect(g.auth_url)
@@ -51,10 +63,8 @@ def user_dashboard():
 
 
 @app.route('/settings/', methods=['GET', 'POST'])
+@login_required
 def settings():
-    if not g.is_logged_in:
-        return redirect(g.auth_url)
-
     form = SettingsForm(request.form, obj=g.user)
     if request.method == 'POST' and form.validate():
         update_user(g.user.user_id, form.name.data, form.company_name.data)
@@ -64,15 +74,14 @@ def settings():
 
 
 @app.route('/league/index/')
+@login_required
 def display_leagues():
-    if not g.is_logged_in:
-        return redirect(g.auth_url)
-
     leagues = League.query(ancestor=g.user.key).fetch()
     return render_template('leagues.html', leagues=leagues, **g.context)
 
 
 @app.route('/league/create/', methods=['GET', 'POST'])
+@login_required
 def create_league_form():
     if not g.is_logged_in:
         return redirect(g.auth_url)
@@ -86,6 +95,7 @@ def create_league_form():
 
 
 @app.route('/league/edit/<string:league_id>/', methods=['GET', 'POST'])
+@login_required
 def edit_league_form(league_id):
     if not g.is_logged_in:
         return redirect(g.auth_url)
