@@ -1,4 +1,4 @@
-from models import BaseModel
+from .base import BaseModel
 from google.appengine.ext import ndb
 import tinyid
 

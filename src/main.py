@@ -4,12 +4,12 @@
 from functools import wraps
 from flask import Flask, g, request, render_template, redirect, url_for
 from google.appengine.api import users
-from forms.league_form import LeagueForm
-from forms.settings_form import SettingsForm
-from models.league import create_league, League, update_league
-from models.user import User, create_user, update_user
+from app.forms.league_form import LeagueForm
+from app.models.league import create_league, League, update_league
+from app.user.views import get_authed_user, user
 
 app = Flask(__name__)
+app.register_blueprint(user)
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
 
@@ -26,25 +26,16 @@ def login_required(func):
 
 @app.before_request
 def before_request(*args, **kwargs):
-    g.user = get_user()
+    g.user = get_authed_user()
     g.is_logged_in = bool(g.user)
-    g.auth_url = users.create_logout_url('/') if g.is_logged_in else users.create_login_url('/dashboard')
+    g.auth_url = users.create_logout_url('/') if g.is_logged_in else users.create_login_url('/user/dashboard/')
     g.context = {
         'auth_url': g.auth_url,
         'is_logged_in': g.is_logged_in,
     }
 
 
-def get_user():
-    session_user = users.get_current_user()
-    if session_user:
-        user_id = session_user.user_id()
-        existing_user = User.build_key(user_id=user_id).get()
-        if not existing_user:
-            existing_user = create_user(user_id)
-        return existing_user
 
-    return None
 
 
 @app.route('/')
@@ -53,24 +44,10 @@ def index():
     return render_template("public.html", **g.context)
 
 
-@app.route('/dashboard/')
-@login_required
-def user_dashboard():
-    if not g.is_logged_in:
-        return redirect(g.auth_url)
-
-    return render_template("dashboard.html", **g.context)
 
 
-@app.route('/settings/', methods=['GET', 'POST'])
-@login_required
-def settings():
-    form = SettingsForm(request.form, obj=g.user)
-    if request.method == 'POST' and form.validate():
-        update_user(g.user.user_id, form.name.data, form.company_name.data)
-        return redirect(url_for('settings'))
 
-    return render_template('settings.html', form=form, **g.context)
+
 
 
 @app.route('/league/index/')

@@ -1,5 +1,4 @@
 from google.appengine.ext import ndb
-__author__ = 'djw'
 
 
 class BaseModel(ndb.Model):

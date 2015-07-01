@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container col-md-6">
 <h2>Settings</h2>
-<form method=post action="{{ url_for('settings') }}">
+<form method=post action="{{ url_for('user.settings') }}">
   {{ render_field(form.name) }}
   {{ render_field(form.company_name) }}
   <button type="submit" class="btn btn-default">Submit</button>
