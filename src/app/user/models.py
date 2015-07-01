@@ -1,5 +1,5 @@
 from google.appengine.ext import ndb
-from app.models.base import BaseModel
+from app.models import BaseModel
 
 
 class User(BaseModel):

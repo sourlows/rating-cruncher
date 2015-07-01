@@ -4,12 +4,12 @@
 from functools import wraps
 from flask import Flask, g, request, render_template, redirect, url_for
 from google.appengine.api import users
-from app.forms.league_form import LeagueForm
-from app.models.league import create_league, League, update_league
-from app.user.views import get_authed_user, user
+from app.user.views import get_authed_user, user_module
+from app.league.views import league_module
 
 app = Flask(__name__)
-app.register_blueprint(user)
+app.register_blueprint(user_module)
+app.register_blueprint(league_module)
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
 
@@ -50,43 +50,7 @@ def index():
 
 
 
-@app.route('/league/index/')
-@login_required
-def display_leagues():
-    leagues = League.query(ancestor=g.user.key).fetch()
-    return render_template('leagues.html', leagues=leagues, **g.context)
 
-
-@app.route('/league/create/', methods=['GET', 'POST'])
-@login_required
-def create_league_form():
-    if not g.is_logged_in:
-        return redirect(g.auth_url)
-
-    form = LeagueForm(request.form)
-    if request.method == 'POST' and form.validate():
-        create_league(g.user, form.name.data, form.rating_scheme.data, form.description.data)
-        return redirect(url_for('display_leagues'))
-
-    return render_template('create_league.html', form=form, **g.context)
-
-
-@app.route('/league/edit/<string:league_id>/', methods=['GET', 'POST'])
-@login_required
-def edit_league_form(league_id):
-    if not g.is_logged_in:
-        return redirect(g.auth_url)
-
-    form = LeagueForm(request.form)
-    if request.method == 'POST' and form.validate():
-        update_league(g.user, league_id, form.name.data, form.rating_scheme.data, form.description.data)
-        return redirect(url_for('display_leagues'))
-
-    key = League.build_key(league_id, g.user.key)
-    league = key.get()
-    form = LeagueForm(obj=league)
-
-    return render_template('edit_league.html', form=form, league=league, **g.context)
 
 
 

@@ -1,1 +1,1 @@
-__author__ = 'djw'
+from models import BaseModel
