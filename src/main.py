@@ -42,7 +42,7 @@ def index():
     return render_template("public.html", **g.context)
 
 
-@app.route('/dashboard')
+@app.route('/dashboard/')
 def user_dashboard():
     if not g.is_logged_in:
         return redirect(g.auth_url)
@@ -50,7 +50,7 @@ def user_dashboard():
     return render_template("dashboard.html", **g.context)
 
 
-@app.route('/settings', methods=['GET', 'POST'])
+@app.route('/settings/', methods=['GET', 'POST'])
 def settings():
     if not g.is_logged_in:
         return redirect(g.auth_url)
@@ -63,7 +63,7 @@ def settings():
     return render_template('settings.html', form=form, **g.context)
 
 
-@app.route('/leagues/')
+@app.route('/league/index/')
 def display_leagues():
     if not g.is_logged_in:
         return redirect(g.auth_url)
@@ -72,7 +72,7 @@ def display_leagues():
     return render_template('leagues.html', leagues=leagues, **g.context)
 
 
-@app.route('/leagues/create', methods=['GET', 'POST'])
+@app.route('/league/create/', methods=['GET', 'POST'])
 def create_league_form():
     if not g.is_logged_in:
         return redirect(g.auth_url)
@@ -85,7 +85,7 @@ def create_league_form():
     return render_template('create_league.html', form=form, **g.context)
 
 
-@app.route('/leagues/edit/<string:league_id>', methods=['GET', 'POST'])
+@app.route('/league/edit/<string:league_id>/', methods=['GET', 'POST'])
 def edit_league_form(league_id):
     if not g.is_logged_in:
         return redirect(g.auth_url)

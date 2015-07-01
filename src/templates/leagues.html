@@ -6,7 +6,7 @@
 
     {% if not leagues %}
         <p>You have not yet created any leagues.</p>
-        <p><a class="btn btn-default" href="/league/create" role="button">Create a league now</a></p>
+        <p><a class="btn btn-default" href="{{ url_for('create_league_form') }}" role="button">Create a league now</a></p>
     {% else %}
         <table class="table">
         <tr>

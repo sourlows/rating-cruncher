@@ -13,9 +13,9 @@
         <div id="navbar" class="collapse navbar-collapse">
             {% if is_logged_in %}
             <ul class="nav navbar-nav">
-                <li><a href="/dashboard">Dashboard</a></li>
-                <li><a href="/settings">Settings</a></li>
-                <li><a href="/leagues">Leagues</a></li>
+                <li><a href="{{ url_for('user_dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('settings') }}">Settings</a></li>
+                <li><a href="{{ url_for('display_leagues') }}">Leagues</a></li>
                 <li><a href="#contact">Support</a></li>
             </ul>
             {% endif %}
