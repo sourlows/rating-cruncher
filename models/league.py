@@ -35,3 +35,19 @@ def create_league(user, name, rating_scheme, description=None):
     new_league.put()
 
     return new_league
+
+
+def update_league(user, league_id, name, rating_scheme, description=None):
+    if not league_id:
+        raise ValueError('league_id is required')
+
+    key = League.build_key(league_id, user.key)
+    league = key.get()
+    if not league:
+        raise ValueError("There is no league for league_id %s" % league_id)
+
+    league.name = name
+    league.rating_scheme = rating_scheme
+    league.description = description
+    league.put()
+    return
