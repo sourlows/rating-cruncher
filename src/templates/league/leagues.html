@@ -6,7 +6,7 @@
 
     {% if not leagues %}
         <p>You have not yet created any leagues.</p>
-        <p><a class="btn btn-default" href="{{ url_for('create_league_form') }}" role="button">Create a league now</a></p>
+        <p><a class="btn btn-default" href="{{ url_for('league.create_league_form') }}" role="button">Create a league now</a></p>
     {% else %}
         <table class="table">
         <tr>
@@ -20,7 +20,7 @@
                 <td>{{ league.name }}</td>
                 <td>{{ league.rating_scheme }}</td>
                 <td>{{ 'PH' }}</td>
-                <td><a class="btn btn-default btn-xs" href="{{ url_for('edit_league_form',league_id=league.league_id) }}" role="button">Settings</a></td>
+                <td><a class="btn btn-default btn-xs" href="{{ url_for('league.edit_league_form',league_id=league.league_id) }}" role="button">Settings</a></td>
             </tr>
         {% endfor %}
         </table>
