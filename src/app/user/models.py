@@ -1,3 +1,4 @@
+import uuid
 from google.appengine.ext import ndb
 from app.models import BaseModel
 
@@ -9,6 +10,7 @@ class User(BaseModel):
     user_id = ndb.StringProperty(required=True)
     name = ndb.StringProperty(indexed=False)
     company_name = ndb.StringProperty()
+    api_key = ndb.StringProperty(required=True)
 
 
 def create_user(user_id, name=None, company_name=None):
@@ -16,7 +18,9 @@ def create_user(user_id, name=None, company_name=None):
         raise ValueError('user_id is required')
 
     key = User.build_key(user_id=user_id)
-    new_user = User(key=key, user_id=user_id, name=name, company_name=company_name)
+    api_key = uuid.uuid4().hex
+
+    new_user = User(key=key, user_id=user_id, name=name, company_name=company_name, api_key=api_key)
     new_user.put()
 
     return new_user
