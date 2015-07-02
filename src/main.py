@@ -2,15 +2,16 @@
 
 # Import the Flask Framework
 from functools import wraps
-from flask import Flask, g, render_template, redirect, jsonify
+from flask import Flask, g, render_template, redirect
 from google.appengine.api import users
 from app.user.views import get_authed_user, user_module
 from app.league.views import league_module
-from app.apis import api_auth
+from app.api.base import api_module
 
 app = Flask(__name__)
 app.register_blueprint(user_module)
 app.register_blueprint(league_module)
+app.register_blueprint(api_module)
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
 
@@ -40,12 +41,6 @@ def before_request(*args, **kwargs):
 def index():
     """Return a friendly HTTP greeting."""
     return render_template("public.html", **g.context)
-
-@app.route('/api/league/')
-@api_auth.login_required
-def get_all_leagues():
-    """Return a friendly HTTP greeting."""
-    return jsonify({'stuff': 'a value'})
 
 
 @app.errorhandler(404)
