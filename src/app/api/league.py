@@ -1,5 +1,14 @@
-from flask.ext.restful import Resource, reqparse
+from flask.ext.restful import Resource, reqparse, fields, marshal
 from .base import api_auth
+from ..user import User
+from ..league.models import League
+
+
+league_template = {
+    'name': fields.String,
+    'rating_scheme': fields.String,
+    'description': fields.String,
+}
 
 
 class LeagueListAPI(Resource):
@@ -17,7 +26,9 @@ class LeagueListAPI(Resource):
         """ return all leagues associated with the user """
         args = self.reqparse.parse_args()
         user_id = args['username']
-        return {'your_id': user_id}
+        ancestor_key = User.build_key(user_id=user_id)
+        leagues = League.query(ancestor=ancestor_key).fetch()
+        return {'leagues': [marshal(l, league_template) for l in leagues]}
 
     def post(self):
         """ create a new league """
