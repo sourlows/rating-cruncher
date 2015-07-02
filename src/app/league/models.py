@@ -4,7 +4,7 @@ from app.models import BaseModel
 import tinyid
 
 
-class League(BaseModel):
+class LeagueModel(BaseModel):
     KEY_NAME_FIELDS = ['user_id', 'league_id']
 
     league_id = ndb.StringProperty(required=True)
@@ -29,10 +29,10 @@ class League(BaseModel):
 
 
 def create_league(user, name, rating_scheme, description=None):
-    league_id = League.generate_id()
-    key = League.build_key(league_id, user.key)
-    new_league = League(key=key, league_id=league_id, name=name, rating_scheme=rating_scheme,
-                        description=description)
+    league_id = LeagueModel.generate_id()
+    key = LeagueModel.build_key(league_id, user.key)
+    new_league = LeagueModel(key=key, league_id=league_id, name=name, rating_scheme=rating_scheme,
+                             description=description)
     new_league.put()
 
     return new_league
@@ -42,7 +42,7 @@ def update_league(user, league_id, name, rating_scheme, description=None):
     if not league_id:
         raise ValueError('league_id is required')
 
-    key = League.build_key(league_id, user.key)
+    key = LeagueModel.build_key(league_id, user.key)
     league = key.get()
     if not league:
         raise ValueError("There is no league for league_id %s" % league_id)

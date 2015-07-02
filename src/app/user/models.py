@@ -3,7 +3,7 @@ from google.appengine.ext import ndb
 from app.models import BaseModel
 
 
-class User(BaseModel):
+class UserModel(BaseModel):
 
     KEY_NAME_FIELDS = ['user_id']
 
@@ -17,10 +17,10 @@ def create_user(user_id, name=None, company_name=None):
     if not user_id:
         raise ValueError('user_id is required')
 
-    key = User.build_key(user_id=user_id)
+    key = UserModel.build_key(user_id=user_id)
     api_key = uuid.uuid4().hex
 
-    new_user = User(key=key, user_id=user_id, name=name, company_name=company_name, api_key=api_key)
+    new_user = UserModel(key=key, user_id=user_id, name=name, company_name=company_name, api_key=api_key)
     new_user.put()
 
     return new_user
@@ -30,7 +30,7 @@ def update_user(user_id, name=None, company_name=None):
     if not user_id:
         raise ValueError('user_id is required')
 
-    key = User.build_key(user_id=user_id)
+    key = UserModel.build_key(user_id=user_id)
     existing_user = key.get()
     if not existing_user:
         raise ValueError("There is no user for user_id %s" % user_id)

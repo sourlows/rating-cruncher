@@ -1,7 +1,7 @@
 from flask.ext.restful import Resource, reqparse, fields, marshal
 from .base import api_auth
-from ..user import User
-from ..league.models import League
+from ..user import UserModel
+from ..league.models import LeagueModel
 
 
 league_template = {
@@ -27,9 +27,9 @@ class LeagueListAPI(Resource):
         """ return all leagues associated with the user """
         args = self.reqparse.parse_args()
         user_id = args['username']
-        ancestor_key = User.build_key(user_id=user_id)
+        ancestor_key = UserModel.build_key(user_id=user_id)
 
-        leagues = League.query(ancestor=ancestor_key).fetch()
+        leagues = LeagueModel.query(ancestor=ancestor_key).fetch()
         return {'data': [marshal(l, league_template) for l in leagues]}
 
     def post(self):
@@ -52,9 +52,9 @@ class LeagueAPI(Resource):
         """ return the specified league """
         args = self.reqparse.parse_args()
         user_id = args['username']
-        ancestor_key = User.build_key(user_id=user_id)
+        ancestor_key = UserModel.build_key(user_id=user_id)
 
-        league = League.build_key(league_id=league_id, user_key=ancestor_key).get()
+        league = LeagueModel.build_key(league_id=league_id, user_key=ancestor_key).get()
         return {'data': marshal(league, league_template)}
 
     def put(self, league_id):
