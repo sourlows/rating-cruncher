@@ -1,2 +1,2 @@
-from .league import get_all_leagues
+from .league import LeagueAPI, LeagueListAPI
 from .base import api_module

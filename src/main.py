@@ -7,10 +7,17 @@ from google.appengine.api import users
 from app.user.views import get_authed_user, user_module
 from app.league.views import league_module
 from app.api.base import api_module
+from flask.ext.restful import Api
+from app.api.league import LeagueListAPI, LeagueAPI
 
 app = Flask(__name__)
 app.register_blueprint(user_module)
 app.register_blueprint(league_module)
+
+api = Api(api_module)
+api.add_resource(LeagueListAPI, '/league/')
+api.add_resource(LeagueAPI, '/league/<string:league_id>')
+
 app.register_blueprint(api_module)
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.

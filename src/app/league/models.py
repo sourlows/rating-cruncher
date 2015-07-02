@@ -9,7 +9,7 @@ class League(BaseModel):
 
     league_id = ndb.StringProperty(required=True)
     name = ndb.StringProperty()
-    rating_scheme = ndb.StringProperty()
+    rating_scheme = ndb.StringProperty(required=True, choices=['ELO', 'type1', 'type2'])
     description = ndb.TextProperty(indexed=False)
 
     @classmethod
