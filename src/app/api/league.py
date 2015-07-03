@@ -1,7 +1,7 @@
 from flask.ext.restful import Resource, reqparse, fields, marshal
 from .base import api_auth
 from ..user import UserModel
-from ..league.models import LeagueModel, create_league
+from ..league.models import LeagueModel, create_league, update_league
 
 
 league_template = {
@@ -39,7 +39,7 @@ class LeagueListAPI(Resource):
         user = UserModel.build_key(user_id=user_id).get()
 
         new_league = create_league(user, args.get('name'), args.get('rating_scheme'),
-                                               description=args.get('description'))
+                                   description=args.get('description'))
         return {'data': marshal(new_league, league_template)}
 
 
@@ -65,7 +65,13 @@ class LeagueAPI(Resource):
 
     def put(self, league_id):
         """ update the specified league """
-        pass
+        args = self.reqparse.parse_args()
+        user_id = args['username']
+        user = UserModel.build_key(user_id=user_id).get()
+
+        updated_league = update_league(user, league_id, args.get('name'), args.get('rating_scheme'),
+                                       description=args.get('description'))
+        return {'data': marshal(updated_league, league_template)}
 
     def delete(self, league_id):
         """ delete the specified league """

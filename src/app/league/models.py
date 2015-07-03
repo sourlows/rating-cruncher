@@ -51,4 +51,5 @@ def update_league(user, league_id, name, rating_scheme, description=None):
     league.rating_scheme = rating_scheme
     league.description = description
     league.put()
-    return
+
+    return league
