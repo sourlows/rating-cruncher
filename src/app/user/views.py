@@ -2,7 +2,7 @@ from functools import wraps
 from google.appengine.api import users
 from flask import Blueprint, redirect, request, g, url_for, render_template
 from .forms import SettingsForm
-from .models import update_user, User, create_user
+from .models import update_user, UserModel, create_user
 
 user_module = Blueprint('user', __name__, url_prefix='/user')
 
@@ -21,7 +21,7 @@ def get_authed_user():
     session_user = users.get_current_user()
     if session_user:
         user_id = session_user.user_id()
-        existing_user = User.build_key(user_id=user_id).get()
+        existing_user = UserModel.build_key(user_id=user_id).get()
         if not existing_user:
             existing_user = create_user(user_id)
         return existing_user
@@ -37,6 +37,7 @@ def settings():
         update_user(g.user.user_id, form.name.data, form.company_name.data)
         return redirect(url_for('user.settings'))
 
+    g.context['api_key'] = g.user.api_key
     return render_template('user/settings.html', form=form, **g.context)
 
 
