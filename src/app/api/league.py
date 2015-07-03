@@ -1,7 +1,7 @@
 from flask.ext.restful import Resource, reqparse, fields, marshal
 from .base import api_auth
 from ..user import UserModel
-from ..league.models import LeagueModel, create_league, update_league
+from ..league.models import LeagueModel, create_league, update_league, delete_league
 
 
 league_template = {
@@ -75,4 +75,9 @@ class LeagueAPI(Resource):
 
     def delete(self, league_id):
         """ delete the specified league """
-        pass
+        args = self.reqparse.parse_args()
+        user_id = args['username']
+        user = UserModel.build_key(user_id=user_id).get()
+
+        delete_league(user, league_id)
+        return {'data': 'Success'}

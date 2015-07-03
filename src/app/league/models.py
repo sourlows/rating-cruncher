@@ -53,3 +53,8 @@ def update_league(user, league_id, name, rating_scheme, description=None):
     league.put()
 
     return league
+
+
+def delete_league(user, league_id):
+    key = LeagueModel.build_key(league_id, user.key)
+    return key.delete()
