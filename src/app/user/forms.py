@@ -1,4 +1,3 @@
-__author__ = 'Alex'
 from wtforms import Form, StringField, validators
 
 

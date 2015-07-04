@@ -1,8 +1,8 @@
 from functools import wraps
 from google.appengine.api import users
+from app.user.forms import SettingsForm
+from app.user.models import UserModel, create_user, update_user
 from flask import Blueprint, redirect, request, g, url_for, render_template
-from .forms import SettingsForm
-from .models import update_user, UserModel, create_user
 
 user_module = Blueprint('user', __name__, url_prefix='/user')
 

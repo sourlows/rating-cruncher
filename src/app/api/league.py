@@ -1,7 +1,7 @@
 from flask.ext.restful import Resource, reqparse, fields, marshal
-from .base import api_auth
-from ..user import UserModel
-from ..league.models import LeagueModel, create_league, update_league, delete_league
+from app.api.base import api_auth
+from app.league.models import LeagueModel, create_league, update_league, delete_league
+from app.user.models import UserModel
 
 
 league_template = {

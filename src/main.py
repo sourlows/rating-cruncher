@@ -23,16 +23,6 @@ app.register_blueprint(api_module)
 # the App Engine WSGI application server.
 
 
-def login_required(func):
-    """Requires standard login credentials"""
-    @wraps(func)
-    def decorated_view(*args, **kwargs):
-        if not users.get_current_user():
-            return redirect(g.auth_url)
-        return func(*args, **kwargs)
-    return decorated_view
-
-
 @app.before_request
 def before_request(*args, **kwargs):
     g.user = get_authed_user()
