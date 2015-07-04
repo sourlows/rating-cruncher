@@ -1,7 +1,6 @@
-from flask.ext.restful import Resource, reqparse, fields, marshal
-from app.api.base import api_auth
+from flask.ext.restful import fields, marshal
+from app.api.base import BaseAuthResource
 from app.league.models import LeagueModel, create_league, update_league, delete_league
-from app.user.models import UserModel
 
 
 league_template = {
@@ -12,18 +11,8 @@ league_template = {
 }
 
 
-class LeagueListAPI(Resource):
-    decorators = [api_auth.login_required]
-
-    def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('username', type=str, required=True, location='authorization')
-        self.reqparse.add_argument('name', type=str, location='json')
-        self.reqparse.add_argument('rating_scheme', type=str, default="ELO", location='json')
-        self.reqparse.add_argument('description', type=str, location='json')
-        self.args = self.reqparse.parse_args()
-        self.user = UserModel.build_key(user_id=self.args['username']).get()
-        super(LeagueListAPI, self).__init__()
+class LeagueListAPI(BaseAuthResource):
+    OPTIONAL_ARGS = ['name', 'rating_scheme', 'description']
 
     def get(self):
         """ return all leagues associated with the user """
@@ -37,18 +26,8 @@ class LeagueListAPI(Resource):
         return {'data': marshal(new_league, league_template)}
 
 
-class LeagueAPI(Resource):
-    decorators = [api_auth.login_required]
-
-    def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('username', type=str, required=True, location='authorization')
-        self.reqparse.add_argument('name', type=str, location='json')
-        self.reqparse.add_argument('rating_scheme', type=str, default="ELO", location='json')
-        self.reqparse.add_argument('description', type=str, location='json')
-        self.args = self.reqparse.parse_args()
-        self.user = UserModel.build_key(user_id=self.args['username']).get()
-        super(LeagueAPI, self).__init__()
+class LeagueAPI(BaseAuthResource):
+    OPTIONAL_ARGS = ['name', 'rating_scheme', 'description']
 
     def get(self, league_id):
         """ return the specified league """
