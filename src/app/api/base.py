@@ -47,5 +47,5 @@ class BaseAuthResource(Resource):
             self.reqparse.add_argument(arg_name, type=str, location='json')
 
         self.args = self.reqparse.parse_args()
-        self.user = UserModel.build_key(user_id=self.args['username']).get()
+        self.user = UserModel.build_key(user_id=self.args[self.API_USER]).get()
         super(BaseAuthResource, self).__init__()
