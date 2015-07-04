@@ -1,6 +1,6 @@
+from app.user.models import UserModel
 from flask import jsonify, make_response
 from flask.ext.httpauth.flask_httpauth import HTTPBasicAuth
-from .user import UserModel
 
 api_auth = HTTPBasicAuth()
 

@@ -1,7 +1,6 @@
-from flask.ext.restful import Resource, reqparse, fields, marshal
-from .base import api_auth
-from ..user import UserModel
-from ..league.models import LeagueModel, create_league, update_league, delete_league
+from flask.ext.restful import fields, marshal
+from app.api.base import BaseAuthResource
+from app.league.models import LeagueModel, create_league, update_league, delete_league
 
 
 league_template = {
@@ -12,72 +11,36 @@ league_template = {
 }
 
 
-class LeagueListAPI(Resource):
-    decorators = [api_auth.login_required]
-
-    def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('username', type=str, required=True, location='authorization')
-        self.reqparse.add_argument('name', type=str, location='json')
-        self.reqparse.add_argument('rating_scheme', type=str, default="ELO", location='json')
-        self.reqparse.add_argument('description', type=str, location='json')
-        super(LeagueListAPI, self).__init__()
+class LeagueListAPI(BaseAuthResource):
+    OPTIONAL_ARGS = ['name', 'rating_scheme', 'description']
 
     def get(self):
         """ return all leagues associated with the user """
-        args = self.reqparse.parse_args()
-        user_id = args['username']
-        ancestor_key = UserModel.build_key(user_id=user_id)
-
-        leagues = LeagueModel.query(ancestor=ancestor_key).fetch()
+        leagues = LeagueModel.query(ancestor=self.user.key).fetch()
         return {'data': [marshal(l, league_template) for l in leagues]}
 
     def post(self):
         """ create a new league """
-        args = self.reqparse.parse_args()
-        user_id = args['username']
-        user = UserModel.build_key(user_id=user_id).get()
-
-        new_league = create_league(user, args.get('name'), args.get('rating_scheme'),
-                                   description=args.get('description'))
+        new_league = create_league(self.user, self.args.get('name'), self.args.get('rating_scheme'),
+                                   description=self.args.get('description'))
         return {'data': marshal(new_league, league_template)}
 
 
-class LeagueAPI(Resource):
-    decorators = [api_auth.login_required]
-
-    def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('username', type=str, required=True, location='authorization')
-        self.reqparse.add_argument('name', type=str, location='json')
-        self.reqparse.add_argument('rating_scheme', type=str, default="ELO", location='json')
-        self.reqparse.add_argument('description', type=str, location='json')
-        super(LeagueAPI, self).__init__()
+class LeagueAPI(BaseAuthResource):
+    OPTIONAL_ARGS = ['name', 'rating_scheme', 'description']
 
     def get(self, league_id):
         """ return the specified league """
-        args = self.reqparse.parse_args()
-        user_id = args['username']
-        ancestor_key = UserModel.build_key(user_id=user_id)
-
-        league = LeagueModel.build_key(league_id=league_id, user_key=ancestor_key).get()
+        league = LeagueModel.build_key(league_id=league_id, user_key=self.user.key).get()
         return {'data': marshal(league, league_template)}
 
     def put(self, league_id):
         """ update the specified league """
-        args = self.reqparse.parse_args()
-        user_id = args['username']
-        user = UserModel.build_key(user_id=user_id).get()
-
-        updated_league = update_league(user, league_id, args.get('name'), args.get('rating_scheme'),
-                                       description=args.get('description'))
+        updated_league = update_league(self.user, league_id, self.args.get('name'), self.args.get('rating_scheme'),
+                                       description=self.args.get('description'))
         return {'data': marshal(updated_league, league_template)}
 
     def delete(self, league_id):
         """ delete the specified league """
-        args = self.reqparse.parse_args()
-        user_id = args['username']
-        user = UserModel.build_key(user_id=user_id).get()
-
-        delete_league(user, league_id)
+        delete_league(self.user, league_id)
         return {'data': 'Success'}

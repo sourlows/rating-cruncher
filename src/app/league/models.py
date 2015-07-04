@@ -1,7 +1,6 @@
-
+import tinyid
 from google.appengine.ext import ndb
 from app.models import BaseModel
-import tinyid
 
 
 class LeagueModel(BaseModel):

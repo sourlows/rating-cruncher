@@ -1,7 +1,7 @@
+from app.league.forms import LeagueForm
+from app.league.models import LeagueModel, create_league, update_league
+from app.user.views import login_required
 from flask import Blueprint, redirect, request, g, url_for, render_template
-from .forms import LeagueForm
-from .models import LeagueModel, create_league, update_league
-from ..user.views import login_required
 
 league_module = Blueprint('league', __name__, url_prefix='/league')
 
