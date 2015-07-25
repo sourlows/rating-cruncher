@@ -8,17 +8,19 @@ class RatingCalculator():
         self.winner = winner
 
     def process(self):
-        expected_score_q = 1/(1 + pow(10, ((self.participant_q - self.participant_v)/400)))
-        expected_score_v = 1/(1 + pow(10, ((self.participant_v - self.participant_q)/400)))
-        K = 32
-        if not self.winner:
-            updated_q = self.participant_q + K*(0.5 - expected_score_q)
-            updated_v = self.participant_v + K*(0.5 - expected_score_v)
-        elif self.winner == self.participant_q:
-            updated_q = self.participant_q + K*(1 - expected_score_q)
-            updated_v = self.participant_v + K*(0 - expected_score_v)
-        else:
-            updated_q = self.participant_q + K*(0 - expected_score_q)
-            updated_v = self.participant_v + K*(1 - expected_score_v)
+        #Eq + Ev = 1
+        expected_score_q = 1.0/(1.0 + pow(10.0, ((self.participant_q.rating - self.participant_v.rating)/400.0)))
+        expected_score_v = 1.0 - expected_score_q
 
-        return updated_q, updated_v
+        # temporary; will be replaced with participant's K value later
+        K = 32.0
+        q_score = 1.0 if self.participant_q == self.winner else 0.0
+        v_score = 1.0 - q_score
+
+        self.participant_q.rating = self.participant_q + K * (q_score-expected_score_q)
+        self.participant_v.rating = self.participant_v + K * (v_score-expected_score_v)
+
+        self.participant_q.put()
+        self.participant_v.put()
+
+        return self.participant_q, self.participant_v

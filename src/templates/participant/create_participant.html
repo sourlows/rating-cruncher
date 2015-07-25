@@ -1,0 +1,11 @@
+{% extends "global.html" %}
+{% from "_formhelpers.html" import render_field %}
+{% block content %}
+<div class="container col-md-6">
+<h2>Create Participant(s)</h2>
+<form method=post action="{{ url_for('participant.create_participants_form') }}">
+  {{ render_field(form.name) }}
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+</div>
+{% endblock %}

@@ -10,7 +10,7 @@ class LeagueModel(BaseModel):
     name = ndb.StringProperty()
     rating_scheme = ndb.StringProperty(required=True, choices=['ELO', 'type1', 'type2'])
     description = ndb.TextProperty(indexed=False)
-    participant_count = ndb.IntegerProperty()
+    participant_count = ndb.IntegerProperty(default=0)
 
     @classmethod
     def generate_id(cls):
@@ -30,13 +30,14 @@ class LeagueModel(BaseModel):
     @classmethod
     def update_participant_count(cls, size):
         cls.participant_count += size
+        cls.put()
 
 
 def create_league(user, name, rating_scheme, description=None):
     league_id = LeagueModel.generate_id()
     key = LeagueModel.build_key(league_id, user.key)
     new_league = LeagueModel(key=key, league_id=league_id, name=name, rating_scheme=rating_scheme,
-                             description=description, participant_count=0)
+                             description=description)
     new_league.put()
 
     return new_league
