@@ -2,6 +2,8 @@
 
 # Import the Flask Framework
 from functools import wraps
+from app.api.participant import ParticipantAPI, ParticipantListAPI
+from app.participant.views import participant_module
 from flask import Flask, g, render_template, redirect
 from google.appengine.api import users
 from app.user.views import get_authed_user, user_module
@@ -13,10 +15,13 @@ from app.api.league import LeagueListAPI, LeagueAPI
 app = Flask(__name__)
 app.register_blueprint(user_module)
 app.register_blueprint(league_module)
+app.register_blueprint(participant_module)
 
 api = Api(api_module)
 api.add_resource(LeagueListAPI, '/league/')
 api.add_resource(LeagueAPI, '/league/<string:league_id>')
+api.add_resource(ParticipantListAPI, '/participant/<string:league_id>')
+api.add_resource(ParticipantAPI, '/participant/<string:league_id>/<string:participant_id>')
 
 app.register_blueprint(api_module)
 # Note: We don't need to call run() since our application is embedded within

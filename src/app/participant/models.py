@@ -39,18 +39,34 @@ class ParticipantModel(BaseModel):
         league.update_participant_count(-1)
 
 
-
-def create_participant(user_id, league_id, name, rating=1400.0):
+def create_participant(user, league_id, name, rating=1400.0):
     participant_id = ParticipantModel.generate_id()
     key = ParticipantModel.build_key(participant_id)
     new_participant = ParticipantModel(key=key, participant_id=participant_id, league_id=league_id,
-                                       user_id=user_id, name=name, rating=rating)
+                                       user_id=user.user_id, name=name, rating=rating)
     new_participant.put()
-    user_key = UserModel.build_key(user_id)
+    user_key = UserModel.build_key(user.user_id)
     league_key = LeagueModel.build_key(league_id, user_key)
     league = league_key.get()
     league.update_participant_count(1)
     return new_participant
+
+
+def update_participant(user, participant_id, league_id, name, rating):
+    if not participant_id:
+        raise ValueError('participant_id is required')
+
+    participant = ParticipantModel.build_key(participant_id).get()
+    if not participant:
+        raise ValueError('There is no participant for participant_id %s' % participant_id)
+
+    participant.user_id = user.user_id
+    participant.name = name
+    participant.league_id = league_id
+    participant.rating = rating
+    participant.put()
+
+    return participant
 
 
 def delete_participant(participant_id):
