@@ -1,7 +1,7 @@
 __author__ = 'Alex'
 
 
-class RatingCalculator():
+class RatingCalculator:
     def __init__(self, participant_q, participant_v, winner=None):
         self.participant_q = participant_q
         self.participant_v = participant_v

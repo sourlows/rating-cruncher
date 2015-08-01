@@ -9,14 +9,15 @@ participant_template = {
     'league_id': fields.String,
     'participant_id': fields.String,
     'name': fields.String,
-    'rating': fields.String
+    'rating': fields.Float
 }
 
 
 class ParticipantListAPI(BaseAuthResource):
-    def get(self, league_id):
-        participants = ParticipantModel.query(league_id=league_id).fetch()
-        return {'data': [marshal(1, participant_template) for 1 in participants]}
+    OPTIONAL_ARGS = ['name', 'rating']
+    def get(self):
+        participants = ParticipantModel.query(league_id=self.args.league_id).fetch()
+        return {'data': [marshal(participant, participant_template) for participant in participants]}
 
     def post(self):
         new_participant = create_participant(self.user.user_id, self.args.get('league_id'),
@@ -25,15 +26,17 @@ class ParticipantListAPI(BaseAuthResource):
 
 
 class ParticipantAPI(BaseAuthResource):
-    def get(self, participant_id):
-        participant = ParticipantModel.build_key(participant_id=participant_id).get()
+    OPTIONAL_ARGS = ['name', 'rating']
+
+    def get(self):
+        participant = ParticipantModel.build_key(participant_id=self.args.participant_id).get()
         return {'data': marshal(participant, participant_template)}
 
-    def put(self, participant_id, opponent_id, winner=None):
-        r = RatingCalculator(participant_id, opponent_id, winner=winner).process()
+    def put(self, opponent_id, winner=None):
+        r, q = RatingCalculator(self.args.participant_id, opponent_id, winner=winner).process()
 
-        return{'data': marshal(r[0], participant_template)}
+        return{'data': marshal(r, participant_template)}
 
-    def delete(self, participant_id):
-        delete_participant(participant_id)
+    def delete(self):
+        delete_participant(self.args.participant_id)
         return {'data': 'Success'}
