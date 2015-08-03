@@ -8,6 +8,7 @@ league_template = {
     'name': fields.String,
     'rating_scheme': fields.String,
     'description': fields.String,
+    'participant_count': fields.Integer
 }
 
 

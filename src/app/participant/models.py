@@ -3,7 +3,6 @@ from google.appengine.ext import ndb
 
 import tinyid
 from app.league.models import LeagueModel
-from app.user.models import UserModel
 
 __author__ = 'Alex'
 
@@ -30,14 +29,6 @@ class ParticipantModel(BaseModel):
         key = ndb.model.Key(cls.__name__, participant_id)
         return key
 
-    @classmethod
-    def _post_delete_hook(cls, key, future):
-        participant = key.get()
-        user_key = UserModel.build_key(cls.user_id)
-        league_key = LeagueModel.build_key(participant.league_id, user_key)
-        league = league_key.get()
-        league.update_participant_count(-1)
-
 
 def create_participant(user, league_id, name, rating=1400.0):
     participant_id = ParticipantModel.generate_id()
@@ -45,9 +36,7 @@ def create_participant(user, league_id, name, rating=1400.0):
     new_participant = ParticipantModel(key=key, participant_id=participant_id, league_id=league_id,
                                        user_id=user.user_id, name=name, rating=rating)
     new_participant.put()
-    user_key = UserModel.build_key(user.user_id)
-    league_key = LeagueModel.build_key(league_id, user_key)
-    league = league_key.get()
+    league = LeagueModel.build_key(league_id, user.key).get()
     league.update_participant_count(1)
     return new_participant
 
@@ -69,6 +58,9 @@ def update_participant(user, participant_id, league_id, name, rating):
     return participant
 
 
-def delete_participant(participant_id):
+def delete_participant(user, participant_id):
     key = ParticipantModel.build_key(participant_id)
+    participant = key.get()
+    league = LeagueModel.build_key(participant.league_id, user.key).get()
+    league.update_participant_count(-1)
     return key.delete()

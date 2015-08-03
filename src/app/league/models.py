@@ -27,10 +27,9 @@ class LeagueModel(BaseModel):
         key = ndb.model.Key(cls.__name__, league_id, parent=user_key)
         return key
 
-    @classmethod
-    def update_participant_count(cls, size):
-        cls.participant_count += size
-        cls.put()
+    def update_participant_count(self, size):
+        self.participant_count = size + self.participant_count
+        self.put()
 
 
 def create_league(user, name, rating_scheme, description=None):
