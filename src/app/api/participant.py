@@ -34,9 +34,9 @@ class ParticipantAPI(BaseAuthResource):
         participant = ParticipantModel.build_key(participant_id).get()
         return {'data': marshal(participant, participant_template)}
 
-    def put(self, league_id):
-        return
-        # return{'data': marshal(r, participant_template)}
+    def put(self, league_id, participant_id, opponent_id, winner=None):
+        q, r = RatingCalculator(participant_id, opponent_id) if winner is None else RatingCalculator(participant_id, opponent_id, winner)
+        return{'data': marshal(q, participant_template)}
 
     def delete(self, league_id, participant_id):
         delete_participant(self.user, participant_id)
