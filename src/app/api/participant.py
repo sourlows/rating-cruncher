@@ -28,14 +28,15 @@ class ParticipantListAPI(BaseAuthResource):
 
 
 class ParticipantAPI(BaseAuthResource):
-    OPTIONAL_ARGS = ['name', 'rating']
+    OPTIONAL_ARGS = ['name', 'rating', 'opponent_id', 'winner']
 
     def get(self, league_id, participant_id):
         participant = ParticipantModel.build_key(participant_id).get()
         return {'data': marshal(participant, participant_template)}
 
-    def put(self, league_id, participant_id, opponent_id, winner=None):
-        q, r = RatingCalculator(participant_id, opponent_id, winner)
+    def put(self, league_id, participant_id):
+        q, r = RatingCalculator(participant_id, self.args.get('opponent_id'),
+                                self.args.get('winner')).process()
         return{'data': marshal(q, participant_template)}
 
     def delete(self, league_id, participant_id):
