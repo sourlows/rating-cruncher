@@ -10,6 +10,7 @@ class LeagueModel(BaseModel):
     name = ndb.StringProperty()
     rating_scheme = ndb.StringProperty(required=True, choices=['ELO', 'type1', 'type2'])
     description = ndb.TextProperty(indexed=False)
+    participant_count = ndb.IntegerProperty(default=0)
 
     @classmethod
     def generate_id(cls):
@@ -25,6 +26,10 @@ class LeagueModel(BaseModel):
         """ Builds a key in the default namespace. """
         key = ndb.model.Key(cls.__name__, league_id, parent=user_key)
         return key
+
+    def update_participant_count(self, size):
+        self.participant_count = size + self.participant_count
+        self.put()
 
 
 def create_league(user, name, rating_scheme, description=None):

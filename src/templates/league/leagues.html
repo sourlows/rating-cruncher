@@ -1,29 +1,27 @@
 {% extends "global.html" %}
 {% from "_formhelpers.html" import render_field %}
 {% block content %}
-<div class="container col-md-6">
     <h2>Leagues</h2>
 
     {% if not leagues %}
         <p>You have not yet created any leagues.</p>
         <p><a class="btn btn-default" href="{{ url_for('league.create_league_form') }}" role="button">Create a league now</a></p>
     {% else %}
-        <table class="table">
-        <tr>
-            <th>Name</th>
-            <th>Rating Scheme</th>
-            <th>Participants</th>
-            <th><!-- PH for prettiness --></th>
-        </tr>
         {% for league in leagues %}
-            <tr>
-                <td>{{ league.name }}</td>
-                <td>{{ league.rating_scheme }}</td>
-                <td>{{ 'PH' }}</td>
-                <td><a class="btn btn-default btn-xs" href="{{ url_for('league.edit_league_form',league_id=league.league_id) }}" role="button">Settings</a></td>
-            </tr>
+            <div class="col-md-3 text-center">
+            <div class="panel panel-default">
+                <div class="panel-heading">{{ league.name }}</div>
+                <div class="panel-body">
+                    <p style="text-overflow:ellipsis;overflow:hidden">{{ league.description }}</p>
+                    <p>Rating Scheme: {{ league.rating_scheme }}</p>
+                    <a class="btn btn-default btn-xs" href="{{ url_for('league.edit_league_form',league_id=league.league_id) }}" role="button">Settings</a>
+                    <a class="btn btn-default btn-xs" href="{{ url_for('participant.create_participant',league_id=league.league_id) }}" role="button">Add Participants</a>
+                </div>
+            </div>
+            </div>
         {% endfor %}
-        </table>
+        <div class="col-md-12">
+            <a class="btn btn-default" href="{{ url_for('league.create_league_form') }}" role="button">Create League</a>
+        </div>
     {% endif %}
-</div>
 {% endblock %}
