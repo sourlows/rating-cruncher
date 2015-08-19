@@ -15,7 +15,6 @@ from app.api.league import LeagueListAPI, LeagueAPI
 app = Flask(__name__)
 app.register_blueprint(user_module)
 app.register_blueprint(league_module)
-app.register_blueprint(participant_module)
 
 api = Api(api_module)
 api.add_resource(LeagueListAPI, '/league/')

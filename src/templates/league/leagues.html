@@ -15,7 +15,6 @@
                     <p style="text-overflow:ellipsis;overflow:hidden">{{ league.description }}</p>
                     <p>Rating Scheme: {{ league.rating_scheme }}</p>
                     <a class="btn btn-default btn-xs" href="{{ url_for('league.edit_league_form',league_id=league.league_id) }}" role="button">Settings</a>
-                    <a class="btn btn-default btn-xs" href="{{ url_for('participant.create_participant',league_id=league.league_id) }}" role="button">Add Participants</a>
                 </div>
             </div>
             </div>
