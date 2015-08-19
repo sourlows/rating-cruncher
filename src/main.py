@@ -1,21 +1,20 @@
 """`main` is the top level module for your Flask application."""
 
 # Import the Flask Framework
-from functools import wraps
-from app.api.participant import ParticipantAPI, ParticipantListAPI
-from app.participant.views import participant_module
-from flask import Flask, g, render_template, redirect
 from google.appengine.api import users
+
+from app.api.participant import ParticipantAPI, ParticipantListAPI
+from flask import Flask, g, render_template
 from app.user.views import get_authed_user, user_module
 from app.league.views import league_module
 from app.api.base import api_module
 from flask.ext.restful import Api
 from app.api.league import LeagueListAPI, LeagueAPI
 
+
 app = Flask(__name__)
 app.register_blueprint(user_module)
 app.register_blueprint(league_module)
-app.register_blueprint(participant_module)
 
 api = Api(api_module)
 api.add_resource(LeagueListAPI, '/league/')
