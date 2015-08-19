@@ -1,8 +1,3 @@
-from app.participant.models import ParticipantModel
-
-__author__ = 'Alex'
-
-
 class RatingCalculator:
     def __init__(self, participant, opponent, winner=None):
         self.participant = participant

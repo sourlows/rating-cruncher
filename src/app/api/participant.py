@@ -1,6 +1,6 @@
-from app.participant import RatingCalculator
 from app.api.base import BaseAuthResource
 from app.participant.models import ParticipantModel, create_participant, delete_participant
+from app.participant.rating_calculator import RatingCalculator
 from flask.ext.restful import marshal, fields
 
 __author__ = 'Alex'
@@ -36,7 +36,7 @@ class ParticipantAPI(BaseAuthResource):
     def put(self, league_id, participant_id):
         q, r = RatingCalculator(ParticipantModel.build_key(participant_id).get(),
                                 ParticipantModel.build_key(self.args.get('opponent_id')).get(),
-                                ParticipantModel.build_key(self.args.get('winner')).process().get())
+                                ParticipantModel.build_key(self.args.get('winner')).get()).process()
         return{'data': marshal(q, participant_template)}
 
     def delete(self, league_id, participant_id):
