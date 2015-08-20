@@ -4,8 +4,6 @@ from google.appengine.ext import ndb
 import tinyid
 from app.league.models import LeagueModel
 
-__author__ = 'Alex'
-
 
 class ParticipantModel(BaseModel):
     participant_id = ndb.StringProperty(required=True)

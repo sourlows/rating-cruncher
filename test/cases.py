@@ -1,6 +1,5 @@
 from google.appengine.datastore.datastore_stub_util import PseudoRandomHRConsistencyPolicy
 
-__author__ = 'Alex'
 import unittest
 import main
 import mock

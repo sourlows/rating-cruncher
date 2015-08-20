@@ -3,8 +3,6 @@ from app.participant.models import ParticipantModel, create_participant, delete_
 from app.participant.rating_calculator import RatingCalculator
 from flask.ext.restful import marshal, fields
 
-__author__ = 'Alex'
-
 participant_template = {
     'league_id': fields.String,
     'participant_id': fields.String,
