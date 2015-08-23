@@ -151,7 +151,6 @@ class BaseFlaskTestCase(BaseGAETestCase):
         self.create_test_user()
         self.league = create_league(self.user, name="Nep League", rating_scheme='ELO')
 
-
     def create_test_participant(self):
         self.create_test_user()
         self.create_test_league()
