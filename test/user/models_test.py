@@ -15,10 +15,6 @@ class CreateUserTests(BaseFlaskTestCase):
 
 
 class UpdateUserTests(BaseFlaskTestCase):
-    def test_not_user_id(self):
-        with self.assertRaises(ValueError):
-            create_user(user_id=None)
-
     def test_update_user(self):
         create_user('abc', name='name1', company_name='company name1')
         update_user('abc', name='name2', company_name='company_name2')
