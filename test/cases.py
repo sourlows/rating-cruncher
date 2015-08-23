@@ -1,6 +1,9 @@
 from google.appengine.datastore.datastore_stub_util import PseudoRandomHRConsistencyPolicy
 
 import unittest
+from app.league.models import create_league
+from app.participant.models import create_participant
+from app.user.models import create_user
 import main
 import mock
 from google.appengine.ext import testbed
@@ -141,6 +144,22 @@ class BaseGAETestCase(unittest.TestCase):
 
 
 class BaseFlaskTestCase(BaseGAETestCase):
+    def create_test_user(self):
+        self.user = create_user('nepnep', name='Neptune', company_name='Planeptune')
+
+    def create_test_league(self):
+        self.create_test_user()
+        self.league = create_league(self.user, name="Nep League", rating_scheme='ELO')
+
+
+    def create_test_participant(self):
+        self.create_test_user()
+        self.create_test_league()
+        self.participant = create_participant(self.user, self.league.league_id, 'Nepgear')
+
     def setUp(self):
         super(BaseFlaskTestCase, self).setUp()
         self.app = main.app.test_client()
+        self.user = None
+        self.league = None
+        self.participant = None
