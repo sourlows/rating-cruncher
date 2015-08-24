@@ -35,6 +35,8 @@ class LeagueModel(BaseModel):
 def create_league(user, name, rating_scheme, description=None):
     league_id = LeagueModel.generate_id()
     key = LeagueModel.build_key(league_id, user.key)
+    if rating_scheme not in LeagueModel.rating_scheme._choices:
+        raise ValueError
     new_league = LeagueModel(key=key, league_id=league_id, name=name, rating_scheme=rating_scheme,
                              description=description)
     new_league.put()

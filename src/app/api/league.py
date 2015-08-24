@@ -18,12 +18,15 @@ class LeagueListAPI(BaseAuthResource):
     def get(self):
         """ return all leagues associated with the user """
         leagues = LeagueModel.query(ancestor=self.user.key).fetch()
-        return {'data': [marshal(l, league_template) for l in leagues]}
+        return [marshal(l, league_template) for l in leagues]
 
     def post(self):
         """ create a new league """
-        new_league = create_league(self.user, self.args.get('name'), self.args.get('rating_scheme'),
-                                   description=self.args.get('description'))
+        try:
+            new_league = create_league(self.user, self.args.get('name'), self.args.get('rating_scheme'),
+                                       description=self.args.get('description'))
+        except ValueError:
+            return 'Invalid rating scheme.', 400
         return {'data': marshal(new_league, league_template)}
 
 
