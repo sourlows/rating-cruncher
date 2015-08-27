@@ -16,12 +16,12 @@ class ParticipantListAPI(BaseAuthResource):
 
     def get(self, league_id):
         participants = ParticipantModel.query(getattr(ParticipantModel, 'league_id') == league_id).fetch()
-        return {'data': [marshal(participant, participant_template) for participant in participants]}
+        return [marshal(participant, participant_template) for participant in participants]
 
     def post(self, league_id):
         new_participant = create_participant(self.user, league_id, self.args.get('name'),
                                              rating=float(self.args.get('rating')))
-        return {'data': marshal(new_participant, participant_template)}
+        return marshal(new_participant, participant_template)
 
 
 class ParticipantAPI(BaseAuthResource):
