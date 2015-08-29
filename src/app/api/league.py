@@ -1,4 +1,4 @@
-from app.league.exceptions import LeagueNotFound, InvalidRatingScheme
+from app.league.exceptions import LeagueNotFoundException, InvalidRatingSchemeException
 from flask.ext.restful import fields, marshal
 from app.api.base import BaseAuthResource
 from app.league.models import LeagueModel, create_league, update_league, delete_league
@@ -26,9 +26,9 @@ class LeagueListAPI(BaseAuthResource):
         try:
             new_league = create_league(self.user, self.args.get('name'), self.args.get('rating_scheme'),
                                        description=self.args.get('description'))
-        except ValueError:
-            return 'Invalid rating scheme.', 400
-        return [marshal(new_league, league_template)]
+        except InvalidRatingSchemeException:
+            return 'Invalid rating scheme %s' % self.args.get('rating_scheme'), 400
+        return marshal(new_league, league_template)
 
 
 class LeagueAPI(BaseAuthResource):
@@ -38,7 +38,7 @@ class LeagueAPI(BaseAuthResource):
         """ return the specified league """
         league = LeagueModel.build_key(league_id=league_id, user_key=self.user.key).get()
         if not league:
-            return 'Invalid league.', 404
+            return 'League not found for league id %s' % league_id, 404
         return marshal(league, league_template)
 
     def put(self, league_id):
@@ -46,12 +46,10 @@ class LeagueAPI(BaseAuthResource):
         try:
             updated_league = update_league(self.user, league_id, self.args.get('name'), self.args.get('rating_scheme'),
                                            description=self.args.get('description'))
-        except ValueError:
-            return 'Invalid league id.', 404
-        except LeagueNotFound:
-            return ["No league found for id" + league_id], 404
-        except InvalidRatingScheme:
-            return 'Invalid rating scheme.', 400
+        except LeagueNotFoundException:
+            return 'League not found for league id %s' % league_id, 404
+        except InvalidRatingSchemeException:
+            return 'Invalid rating scheme %s' % self.args.get('rating_scheme'), 400
 
         return marshal(updated_league, league_template)
 
@@ -59,6 +57,6 @@ class LeagueAPI(BaseAuthResource):
         """ delete the specified league """
         try:
             delete_league(self.user, league_id)
-        except LeagueNotFound:
+        except LeagueNotFoundException:
             return 'League not found', 404
         return {'data': 'Success'}

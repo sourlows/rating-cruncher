@@ -2,6 +2,7 @@ import json
 from app.league.models import create_league
 from app.user.models import create_user
 from cases import BaseFlaskTestCase
+from mock import mock
 
 
 class LeagueListAPITests(BaseFlaskTestCase):
@@ -73,14 +74,25 @@ class LeagueListAPITests(BaseFlaskTestCase):
         }
         response = self.app.post('/api/league/')
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, '"Invalid rating scheme %s"\n' % self.args_mock.return_value['rating_scheme'])
 
     def test_post_new_league_when_created_successfully(self):
+        self.create_test_league()
+        self.mock_function_in_setup('app.api.league.create_league', return_value=self.league)
         self.args_mock.return_value = {
             'username': 'nepnep',
-            'rating_scheme': 'type1',
         }
         response = self.app.post('/api/league/')
         self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        expected_l = {
+            'league_id': self.league.league_id,
+            'rating_scheme': self.league.rating_scheme,
+            'name': self.league.name,
+            'description': self.league.description,
+            'participant_count': self.league.participant_count
+        }
+        self.assertEqual(expected_l, data)
 
 
 class LeagueAPITests(BaseFlaskTestCase):
@@ -92,8 +104,9 @@ class LeagueAPITests(BaseFlaskTestCase):
         self.create_test_user()
 
     def test_get_returns_404_if_missing_league_id_is_specified(self):
-        response = self.app.get('/api/league/Not A League ID')
+        response = self.app.get('/api/league/omgcats')
         self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, '"League not found for league id omgcats"\n')
 
     def test_get_returns_league_for_specified_league_id(self):
         self.create_test_league()
@@ -104,11 +117,12 @@ class LeagueAPITests(BaseFlaskTestCase):
             'description': self.league.description,
             'participant_count': self.league.participant_count            
         }
-        self.assertEqual(json.loads(self.app.get('api/league/'+self.league.league_id).data), expected_l)
+        self.assertEqual(json.loads(self.app.get('/api/league/%s' % self.league.league_id).data), expected_l)
 
     def test_put_returns_404_if_missing_league_id_is_specified(self):
-        response = self.app.put('/api/league/Not A League ID')
+        response = self.app.put('/api/league/omgcats')
         self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, '"League not found for league id omgcats"\n')
 
     def test_put_returns_400_if_invalid_elo_scheme_is_specified(self):
         self.create_test_league()
@@ -118,6 +132,7 @@ class LeagueAPITests(BaseFlaskTestCase):
         }
         response = self.app.put('/api/league/'+self.league.league_id)
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, '"Invalid rating scheme %s"\n' % self.args_mock.return_value['rating_scheme'])
 
     def test_put_returns_updated_league(self):
         self.create_test_league()
@@ -140,7 +155,7 @@ class LeagueAPITests(BaseFlaskTestCase):
         self.assertEqual(expected_m, data)
 
     def test_delete_returns_404_if_missing_league_id_is_specified(self):
-        self.assertEqual(self.app.delete('/api/league/Not A League ID').status_code, 404)
+        self.assertEqual(self.app.delete('/api/league/omgcats').status_code, 404)
 
     def test_delete_returns_200_if_specified_league_is_deleted(self):
         self.create_test_league()

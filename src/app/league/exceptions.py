@@ -1,6 +1,6 @@
-class LeagueNotFound(Exception):
+class LeagueNotFoundException(Exception):
     pass
 
 
-class InvalidRatingScheme(Exception):
+class InvalidRatingSchemeException(Exception):
     pass
