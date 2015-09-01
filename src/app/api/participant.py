@@ -29,14 +29,22 @@ class ParticipantAPI(BaseAuthResource):
 
     def get(self, league_id, participant_id):
         participant = ParticipantModel.build_key(participant_id).get()
-        return {'data': marshal(participant, participant_template)}
+        if not participant:
+            return 'Participant not found for %s' % participant_id, 404
+        return marshal(participant, participant_template)
 
     def put(self, league_id, participant_id):
-        q, r = RatingCalculator(ParticipantModel.build_key(participant_id).get(),
-                                ParticipantModel.build_key(self.args.get('opponent_id')).get(),
-                                ParticipantModel.build_key(self.args.get('winner')).get()).process()
-        return{'data': marshal(q, participant_template)}
+        participant = ParticipantModel.build_key(participant_id).get()
+        opponent = ParticipantModel.build_key(self.args.get('opponent_id')).get()
+        if not participant or not opponent:
+            return 'Invalid participant id', 404
+        winner = ParticipantModel.build_key(self.args.get('winner')).get() if self.args.get('winner') else None
+        participant, opponent = RatingCalculator(participant, opponent, winner).process()
+        return marshal(participant, participant_template)
 
     def delete(self, league_id, participant_id):
-        delete_participant(self.user, participant_id)
+        try:
+            delete_participant(self.user, participant_id)
+        except ValueError:
+            return 'Invalid participant id %s' % participant_id, 404
         return {'data': 'Success'}
