@@ -35,7 +35,7 @@ class LeagueModel(BaseModel):
 
 
 def create_league(user, name, rating_scheme, description=None):
-    if rating_scheme not in LeagueModel.rating_scheme._choices:
+    if rating_scheme not in LeagueModel.scheme_choices:
         raise InvalidRatingSchemeException("Invalid rating scheme %s" % rating_scheme)
     league_id = LeagueModel.generate_id()
     key = LeagueModel.build_key(league_id, user.key)
@@ -55,7 +55,7 @@ def update_league(user, league_id, name, rating_scheme, description=None):
     
     if not league:
         raise LeagueNotFoundException("There is no league for league_id %s" % league_id)
-    if rating_scheme not in LeagueModel.rating_scheme._choices:
+    if rating_scheme not in LeagueModel.scheme_choices:
         raise InvalidRatingSchemeException("Invalid rating scheme %s" % rating_scheme)
 
     league.name = name
