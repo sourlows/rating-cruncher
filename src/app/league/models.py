@@ -1,3 +1,4 @@
+from app.league.exceptions import InvalidRatingSchemeException, LeagueNotFoundException
 import tinyid
 from google.appengine.ext import ndb
 from app.models import BaseModel
@@ -8,7 +9,8 @@ class LeagueModel(BaseModel):
 
     league_id = ndb.StringProperty(required=True)
     name = ndb.StringProperty()
-    rating_scheme = ndb.StringProperty(required=True, choices=['ELO', 'type1', 'type2'])
+    scheme_choices = ['ELO', 'type1', 'type2']
+    rating_scheme = ndb.StringProperty(required=True, choices=scheme_choices)
     description = ndb.TextProperty(indexed=False)
     participant_count = ndb.IntegerProperty(default=0)
 
@@ -33,6 +35,8 @@ class LeagueModel(BaseModel):
 
 
 def create_league(user, name, rating_scheme, description=None):
+    if rating_scheme not in LeagueModel.scheme_choices:
+        raise InvalidRatingSchemeException("Invalid rating scheme %s" % rating_scheme)
     league_id = LeagueModel.generate_id()
     key = LeagueModel.build_key(league_id, user.key)
     new_league = LeagueModel(key=key, league_id=league_id, name=name, rating_scheme=rating_scheme,
@@ -48,8 +52,11 @@ def update_league(user, league_id, name, rating_scheme, description=None):
 
     key = LeagueModel.build_key(league_id, user.key)
     league = key.get()
+    
     if not league:
-        raise ValueError("There is no league for league_id %s" % league_id)
+        raise LeagueNotFoundException("There is no league for league_id %s" % league_id)
+    if rating_scheme not in LeagueModel.scheme_choices:
+        raise InvalidRatingSchemeException("Invalid rating scheme %s" % rating_scheme)
 
     league.name = name
     league.rating_scheme = rating_scheme
@@ -61,4 +68,7 @@ def update_league(user, league_id, name, rating_scheme, description=None):
 
 def delete_league(user, league_id):
     key = LeagueModel.build_key(league_id, user.key)
-    return key.delete()
+    if key.get() is None:
+        raise LeagueNotFoundException()
+    else:
+        return key.delete()

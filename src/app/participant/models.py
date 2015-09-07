@@ -4,8 +4,6 @@ from google.appengine.ext import ndb
 import tinyid
 from app.league.models import LeagueModel
 
-__author__ = 'Alex'
-
 
 class ParticipantModel(BaseModel):
     participant_id = ndb.StringProperty(required=True)
@@ -61,6 +59,8 @@ def update_participant(user, participant_id, league_id, name, rating):
 def delete_participant(user, participant_id):
     key = ParticipantModel.build_key(participant_id)
     participant = key.get()
+    if not participant:
+        raise ValueError('Invalid participant id %s' % participant_id)
     league = LeagueModel.build_key(participant.league_id, user.key).get()
     league.update_participant_count(-1)
     return key.delete()
