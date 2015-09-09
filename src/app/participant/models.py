@@ -11,6 +11,7 @@ class ParticipantModel(BaseModel):
     user_id = ndb.StringProperty(required=True)
     name = ndb.StringProperty(indexed=False)
     rating = ndb.FloatProperty()
+    k_factor = ndb.IntegerProperty(default=32)
 
     @classmethod
     def generate_id(cls):

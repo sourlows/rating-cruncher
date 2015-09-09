@@ -17,11 +17,8 @@ class RatingCalculator:
             participant_score = 0.0
         opponent_score = 1.0 - participant_score
 
-        # temporary; will be replaced with participant's K value later
-        k = 32.0
-
-        self.participant.rating += k * (participant_score - expected_score_participant)
-        self.opponent.rating += k * (opponent_score-expected_score_opponent)
+        self.participant.rating += self.participant.k_factor * (participant_score - expected_score_participant)
+        self.opponent.rating += self.opponent.k_factor * (opponent_score-expected_score_opponent)
 
         self.participant.put()
         self.opponent.put()
