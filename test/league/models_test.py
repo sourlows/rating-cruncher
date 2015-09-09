@@ -1,3 +1,4 @@
+from app.league.exceptions import LeagueNotFoundException
 from app.league.models import LeagueModel, create_league, update_league, delete_league
 from app.user.models import create_user
 from cases import BaseFlaskTestCase
@@ -33,7 +34,7 @@ class UpdateLeagueTests(BaseFlaskTestCase):
             update_league(create_user('Name'), league_id=None, name='League', rating_scheme='ELO')
 
     def test_raise_if_invalid_league_id(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(LeagueNotFoundException):
             update_league(create_user('Name'), league_id='Not A League ID', name='League', rating_scheme='ELO')
 
     def test_update_league(self):

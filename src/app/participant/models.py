@@ -11,7 +11,7 @@ class ParticipantModel(BaseModel):
     user_id = ndb.StringProperty(required=True)
     name = ndb.StringProperty(indexed=False)
     rating = ndb.FloatProperty()
-    k_factor = ndb.IntegerProperty(default=32)
+    k_factor = ndb.IntegerProperty()
 
     @classmethod
     def generate_id(cls):
@@ -32,10 +32,10 @@ class ParticipantModel(BaseModel):
 def create_participant(user, league_id, name, rating=1400.0):
     participant_id = ParticipantModel.generate_id()
     key = ParticipantModel.build_key(participant_id)
-    new_participant = ParticipantModel(key=key, participant_id=participant_id, league_id=league_id,
-                                       user_id=user.user_id, name=name, rating=rating)
-    new_participant.put()
     league = LeagueModel.build_key(league_id, user.key).get()
+    new_participant = ParticipantModel(key=key, participant_id=participant_id, league_id=league_id,
+                                       user_id=user.user_id, name=name, rating=rating, k_factor=league.k_factor)
+    new_participant.put()
     league.update_participant_count(1)
     return new_participant
 
