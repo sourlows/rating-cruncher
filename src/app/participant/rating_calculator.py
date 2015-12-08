@@ -1,8 +1,9 @@
 class RatingCalculator:
-    def __init__(self, participant, opponent, winner=None):
+    def __init__(self, league, participant, opponent, winner=None):
         self.participant = participant
         self.opponent = opponent
         self.winner = winner if winner else None
+        self.league = league
 
     def process(self):
         expected_score_participant = 1.0/(1.0 + pow(10.0, ((self.participant.rating - self.opponent.rating)/400.0)))
@@ -19,6 +20,16 @@ class RatingCalculator:
 
         self.participant.rating += self.participant.k_factor * (participant_score - expected_score_participant)
         self.opponent.rating += self.opponent.k_factor * (opponent_score-expected_score_opponent)
+
+        self.participant.games_played += 1
+        self.opponent.games_played += 1
+
+        # If participant has played more games than the scaling factor,
+        # reduce it to the league's min k_factor
+        if self.participant.games_played > self.league.k_factor_scaling:
+            self.participant.k_factor = self.league.k_factor_min
+        if self.opponent.games_played > self.league.k_factor_scaling:
+            self.opponent.k_factor = self.league.k_factor_min
 
         self.participant.put()
         self.opponent.put()

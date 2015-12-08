@@ -14,6 +14,7 @@ class LeagueModel(BaseModel):
     description = ndb.TextProperty(indexed=False)
     participant_count = ndb.IntegerProperty(default=0)
     k_factor = ndb.IntegerProperty(default=32)
+    k_factor_min = ndb.IntegerProperty()
     k_factor_scaling = ndb.IntegerProperty(default=0)
 
     @classmethod
@@ -32,11 +33,11 @@ class LeagueModel(BaseModel):
         return key
 
     def update_participant_count(self, size):
-        self.participant_count = size + self.participant_count
+        self.participant_count += size
         self.put()
 
 
-def create_league(user, name, rating_scheme, description=None):
+def create_league(user, name, rating_scheme, k_factor_scaling, description=None):
     if rating_scheme not in LeagueModel.scheme_choices:
         raise InvalidRatingSchemeException("Invalid rating scheme %s" % rating_scheme)
     league_id = LeagueModel.generate_id()
@@ -44,13 +45,16 @@ def create_league(user, name, rating_scheme, description=None):
 
     if rating_scheme is LeagueModel.scheme_choices[0]:
         k_factor = 32
+        k_factor_min = 16
     elif rating_scheme is LeagueModel.scheme_choices[1]:
         k_factor = 24
+        k_factor_min = 12
     else:
         k_factor = 16
+        k_factor_min = 8
 
-    new_league = LeagueModel(key=key, k_factor=k_factor, league_id=league_id, name=name, rating_scheme=rating_scheme,
-                             description=description)
+    new_league = LeagueModel(key=key, k_factor=k_factor, league_id=league_id, k_factor_scaling=k_factor_scaling,
+                             k_factor_min=k_factor_min, name=name, rating_scheme=rating_scheme, description=description)
     new_league.put()
 
     return new_league
