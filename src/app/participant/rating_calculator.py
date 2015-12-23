@@ -6,7 +6,7 @@ class RatingCalculator:
         self.league = league
 
     def process(self):
-        expected_score_participant = 1.0/(1.0 + pow(10.0, ((self.participant.rating - self.opponent.rating)/400.0)))
+        expected_score_participant = 1.0 / (1.0 + pow(10.0, ((self.participant.rating - self.opponent.rating) / 400.0)))
         expected_score_opponent = 1.0 - expected_score_participant
 
         participant_is_winner = bool(self.participant == self.winner)
@@ -19,17 +19,21 @@ class RatingCalculator:
         opponent_score = 1.0 - participant_score
 
         self.participant.rating += self.participant.k_factor * (participant_score - expected_score_participant)
-        self.opponent.rating += self.opponent.k_factor * (opponent_score-expected_score_opponent)
+        self.opponent.rating += self.opponent.k_factor * (opponent_score - expected_score_opponent)
 
         self.participant.games_played += 1
         self.opponent.games_played += 1
 
-        # If participant has played more games than the scaling factor,
-        # reduce it to the league's min k_factor
-        if self.participant.games_played > self.league.k_factor_scaling:
+        if self.league.k_factor_scaling is 0:
             self.participant.k_factor = self.league.k_factor_min
-        if self.opponent.games_played > self.league.k_factor_scaling:
             self.opponent.k_factor = self.league.k_factor_min
+        else:
+            k_factor_reduction = self.league.k_factor - self.league.k_factor_min / \
+                                                                   self.league.k_factor_scaling
+            if self.participant.games_played > self.league.k_factor_scaling:
+                self.participant.k_factor -= k_factor_reduction
+            if self.opponent.games_played > self.league.k_factor_scaling:
+                self.opponent.k_factor -= k_factor_reduction
 
         self.participant.put()
         self.opponent.put()

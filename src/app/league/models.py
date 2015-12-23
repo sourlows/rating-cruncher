@@ -13,9 +13,14 @@ class LeagueModel(BaseModel):
     rating_scheme = ndb.StringProperty(required=True, choices=scheme_choices)
     description = ndb.TextProperty(indexed=False)
     participant_count = ndb.IntegerProperty(default=0)
-    k_factor = ndb.IntegerProperty(default=32)
-    k_factor_min = ndb.IntegerProperty()
+
+    k_factor = ndb.FloatProperty(default=24.0)
+    k_factor_min = ndb.FloatProperty(default=12.0)
+    # How many games it takes to reach a minimum k_factor
     k_factor_scaling = ndb.IntegerProperty(default=0)
+
+    k_sensitivity_choices = ['Low', 'Medium', 'High']
+    k_sensitivity = ndb.StringProperty(required=True, choices=k_sensitivity_choices)
 
     @classmethod
     def generate_id(cls):
@@ -37,24 +42,25 @@ class LeagueModel(BaseModel):
         self.put()
 
 
-def create_league(user, name, rating_scheme, k_factor_scaling, description=None):
+def create_league(user, name, rating_scheme, k_sensitivity, k_factor_scaling, description=None):
     if rating_scheme not in LeagueModel.scheme_choices:
         raise InvalidRatingSchemeException("Invalid rating scheme %s" % rating_scheme)
     league_id = LeagueModel.generate_id()
     key = LeagueModel.build_key(league_id, user.key)
 
-    if rating_scheme is LeagueModel.scheme_choices[0]:
-        k_factor = 32
-        k_factor_min = 16
-    elif rating_scheme is LeagueModel.scheme_choices[1]:
-        k_factor = 24
-        k_factor_min = 12
-    else:
-        k_factor = 16
-        k_factor_min = 8
+    new_league = LeagueModel(key=key, league_id=league_id, name=name, rating_scheme=rating_scheme,
+                             description=description, k_sensitivity=k_sensitivity, k_factor_scaling=k_factor_scaling)
 
-    new_league = LeagueModel(key=key, k_factor=k_factor, league_id=league_id, k_factor_scaling=k_factor_scaling,
-                             k_factor_min=k_factor_min, name=name, rating_scheme=rating_scheme, description=description)
+    if k_sensitivity is LeagueModel.k_sensitivity_choices[0]:
+        new_league.k_factor = 20
+        new_league.k_factor_min = 10
+    elif k_sensitivity is LeagueModel.k_sensitivity_choices[1]:
+        new_league.k_factor = 32
+        new_league.k_factor_min = 16
+    elif k_sensitivity is LeagueModel.k_sensitivity_choices[2]:
+        new_league.k_factor = 40
+        new_league.k_factor_min = 20
+
     new_league.put()
 
     return new_league

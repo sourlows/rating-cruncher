@@ -12,8 +12,8 @@ class ParticipantModel(BaseModel):
     name = ndb.StringProperty(indexed=False)
     rating = ndb.FloatProperty()
     # k_factor is how many games the participant will play before their k-value is reduced to the minimum
-    k_factor = ndb.IntegerProperty(required=True)
-    games_played = ndb.IntegerProperty()
+    k_factor = ndb.FloatProperty(required=True)
+    games_played = ndb.IntegerProperty(default=0)
 
     @classmethod
     def generate_id(cls):
