@@ -14,12 +14,18 @@ class LeagueModel(BaseModel):
     description = ndb.TextProperty(indexed=False)
     participant_count = ndb.IntegerProperty(default=0)
 
-    k_factor = ndb.FloatProperty(default=24.0)
+    # Never updated; used to set and modify participant-specific k_factors
+    k_factor_initial = ndb.FloatProperty(default=24.0)
     k_factor_min = ndb.FloatProperty(default=12.0)
+
     # How many games it takes to reach a minimum k_factor
     k_factor_scaling = ndb.IntegerProperty(default=0)
 
-    k_sensitivity_choices = ['Low', 'Medium', 'High']
+    LOW_SENSITIVITY_SETTING = 'Low'
+    MEDIUM_SENSITIVITY_SETTING = 'Medium'
+    HIGH_SENSITIVITY_SETTING = 'High'
+
+    k_sensitivity_choices = [LOW_SENSITIVITY_SETTING, MEDIUM_SENSITIVITY_SETTING, HIGH_SENSITIVITY_SETTING]
     k_sensitivity = ndb.StringProperty(required=True, choices=k_sensitivity_choices)
 
     @classmethod
@@ -51,14 +57,14 @@ def create_league(user, name, rating_scheme, k_sensitivity, k_factor_scaling, de
     new_league = LeagueModel(key=key, league_id=league_id, name=name, rating_scheme=rating_scheme,
                              description=description, k_sensitivity=k_sensitivity, k_factor_scaling=k_factor_scaling)
 
-    if k_sensitivity is LeagueModel.k_sensitivity_choices[0]:
-        new_league.k_factor = 20
+    if k_sensitivity == LeagueModel.LOW_SENSITIVITY_SETTING:
+        new_league.k_factor_initial = 20
         new_league.k_factor_min = 10
-    elif k_sensitivity is LeagueModel.k_sensitivity_choices[1]:
-        new_league.k_factor = 32
+    elif k_sensitivity == LeagueModel.MEDIUM_SENSITIVITY_SETTING:
+        new_league.k_factor_initial = 32
         new_league.k_factor_min = 16
-    elif k_sensitivity is LeagueModel.k_sensitivity_choices[2]:
-        new_league.k_factor = 40
+    elif k_sensitivity == LeagueModel.HIGH_SENSITIVITY_SETTING:
+        new_league.k_factor_initial = 40
         new_league.k_factor_min = 20
 
     new_league.put()

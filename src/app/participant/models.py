@@ -35,8 +35,13 @@ def create_participant(user, league_id, name, rating=1400.0):
     participant_id = ParticipantModel.generate_id()
     key = ParticipantModel.build_key(participant_id)
     league = LeagueModel.build_key(league_id, user.key).get()
+
     new_participant = ParticipantModel(key=key, participant_id=participant_id, league_id=league_id,
-                                       user_id=user.user_id, name=name, rating=rating, k_factor=league.k_factor)
+                                       user_id=user.user_id, name=name, rating=rating, k_factor=league.k_factor_initial)
+
+    if league.k_factor_scaling == 0:
+        new_participant.k_factor = league.k_factor_min
+
     new_participant.put()
     league.update_participant_count(1)
     return new_participant

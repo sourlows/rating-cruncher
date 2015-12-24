@@ -24,11 +24,8 @@ class RatingCalculator:
         self.participant.games_played += 1
         self.opponent.games_played += 1
 
-        if self.league.k_factor_scaling is 0:
-            self.participant.k_factor = self.league.k_factor_min
-            self.opponent.k_factor = self.league.k_factor_min
-        else:
-            k_factor_reduction = self.league.k_factor - self.league.k_factor_min / \
+        if not self.league.k_factor_scaling == 0:
+            k_factor_reduction = self.league.k_factor_initial - self.league.k_factor_min / \
                                                                    self.league.k_factor_scaling
             if self.participant.games_played > self.league.k_factor_scaling:
                 self.participant.k_factor -= k_factor_reduction
