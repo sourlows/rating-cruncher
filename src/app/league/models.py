@@ -1,4 +1,4 @@
-from app.league.exceptions import InvalidRatingSchemeException, LeagueNotFoundException
+from app.league.exceptions import InvalidRatingSchemeException, LeagueNotFoundException, InvalidKSensitivityException
 import tinyid
 from google.appengine.ext import ndb
 from app.models import BaseModel
@@ -15,8 +15,19 @@ class LeagueModel(BaseModel):
     participant_count = ndb.IntegerProperty(default=0)
 
     # Never updated; used to set and modify participant-specific k_factors
-    k_factor_initial = ndb.FloatProperty(default=24.0)
-    k_factor_min = ndb.FloatProperty(default=12.0)
+    @property
+    def k_factor_initial(self):
+        return self.k_factor_min * 2
+
+    @property
+    def k_factor_min(self):
+        if self.k_sensitivity == self.LOW_SENSITIVITY_SETTING:
+            return 10
+        if self.k_sensitivity == self.MEDIUM_SENSITIVITY_SETTING:
+            return 16
+        if self.k_sensitivity == self.HIGH_SENSITIVITY_SETTING:
+            return 20
+        raise InvalidKSensitivityException
 
     # How many games it takes to reach a minimum k_factor
     k_factor_scaling = ndb.IntegerProperty(default=0)
@@ -56,17 +67,6 @@ def create_league(user, name, rating_scheme, k_sensitivity, k_factor_scaling, de
 
     new_league = LeagueModel(key=key, league_id=league_id, name=name, rating_scheme=rating_scheme,
                              description=description, k_sensitivity=k_sensitivity, k_factor_scaling=k_factor_scaling)
-
-    if k_sensitivity == LeagueModel.LOW_SENSITIVITY_SETTING:
-        new_league.k_factor_initial = 20
-        new_league.k_factor_min = 10
-    elif k_sensitivity == LeagueModel.MEDIUM_SENSITIVITY_SETTING:
-        new_league.k_factor_initial = 32
-        new_league.k_factor_min = 16
-    elif k_sensitivity == LeagueModel.HIGH_SENSITIVITY_SETTING:
-        new_league.k_factor_initial = 40
-        new_league.k_factor_min = 20
-
     new_league.put()
 
     return new_league
@@ -98,3 +98,4 @@ def delete_league(user, league_id):
         raise LeagueNotFoundException()
     else:
         return key.delete()
+

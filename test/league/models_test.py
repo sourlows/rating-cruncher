@@ -14,10 +14,10 @@ class LeagueModelTests(BaseFlaskTestCase):
         pass
 
     def test_update_participant_count(self):
-        q = LeagueModel(league_id=LeagueModel.generate_id(), rating_scheme='ELO')
-        self.assertEquals(q.participant_count, 0)
-        q.update_participant_count(3)
-        self.assertEquals(q.participant_count, 3)
+        self.create_test_league()
+        self.assertEquals(self.league.participant_count, 0)
+        self.league.update_participant_count(3)
+        self.assertEquals(self.league.participant_count, 3)
 
 
 class CreateLeagueTests(BaseFlaskTestCase):

@@ -3,7 +3,7 @@ class RatingCalculator:
         self.participant = participant
         self.opponent = opponent
         self.winner = winner if winner else None
-        self.league = league
+        self.league = league.get()
 
     def process(self):
         expected_score_participant = 1.0 / (1.0 + pow(10.0, ((self.participant.rating - self.opponent.rating) / 400.0)))

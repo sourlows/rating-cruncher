@@ -4,3 +4,7 @@ class LeagueNotFoundException(Exception):
 
 class InvalidRatingSchemeException(Exception):
     pass
+
+
+class InvalidKSensitivityException(Exception):
+    pass
