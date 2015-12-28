@@ -39,7 +39,7 @@ class ParticipantAPI(BaseAuthResource):
         opponent = ParticipantModel.build_key(self.args.get('opponent_id')).get()
         if not participant or not opponent:
             return 'Invalid participant id', 404
-        league = LeagueModel.build_key(league_id, self.user.key)
+        league = LeagueModel.build_key(league_id, self.user.key).get()
         winner = ParticipantModel.build_key(self.args.get('winner')).get() if self.args.get('winner') else None
         participant, opponent = RatingCalculator(league, participant, opponent, winner).process()
         return marshal(participant, participant_template)

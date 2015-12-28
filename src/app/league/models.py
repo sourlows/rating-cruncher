@@ -14,7 +14,6 @@ class LeagueModel(BaseModel):
     description = ndb.TextProperty(indexed=False)
     participant_count = ndb.IntegerProperty(default=0)
 
-    # Never updated; used to set and modify participant-specific k_factors
     @property
     def k_factor_initial(self):
         return self.k_factor_min * 2
@@ -72,7 +71,7 @@ def create_league(user, name, rating_scheme, k_sensitivity, k_factor_scaling, de
     return new_league
 
 
-def update_league(user, league_id, name, rating_scheme, description=None):
+def update_league(user, league_id, name, rating_scheme, k_sensitivity, k_factor_scaling, description=None):
     if not league_id:
         raise ValueError('league_id is required')
 
@@ -87,6 +86,8 @@ def update_league(user, league_id, name, rating_scheme, description=None):
     league.name = name
     league.rating_scheme = rating_scheme
     league.description = description
+    league.k_sensitivity = k_sensitivity
+    league.k_factor_scaling = k_factor_scaling
     league.put()
 
     return league
