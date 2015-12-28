@@ -26,6 +26,9 @@ class CreateLeagueTests(BaseFlaskTestCase):
         self.assertEqual(self.league.name, 'Nep League')
         self.assertTrue('LG-' in self.league.league_id)
         self.assertEqual(self.league.rating_scheme, 'ELO')
+        self.assertEqual(self.league.k_sensitivity, LeagueModel.LOW_SENSITIVITY_SETTING)
+        self.assertEqual(self.league.k_factor_scaling, 10)
+        self.assertEqual(self.league.participant_count, 0)
 
 
 class UpdateLeagueTests(BaseFlaskTestCase):
@@ -48,6 +51,8 @@ class UpdateLeagueTests(BaseFlaskTestCase):
                       k_sensitivity='Medium', k_factor_scaling=20)
         self.assertEqual(self.league.name, 'Lastation League')
         self.assertEqual(self.league.rating_scheme, 'type1')
+        self.assertIsNotNone(self.league.k_sensitivity)
+        self.assertIsNotNone(self.league.k_factor_scaling)
 
 
 class DeleteLeagueTests(BaseFlaskTestCase):

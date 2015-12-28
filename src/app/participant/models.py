@@ -11,7 +11,9 @@ class ParticipantModel(BaseModel):
     user_id = ndb.StringProperty(required=True)
     name = ndb.StringProperty(indexed=False)
     rating = ndb.FloatProperty()
-    # k_factor is how many games the participant will play before their k-value is reduced to the minimum
+
+    # set from League based on games_played; initially league.k_factor_initial
+    # if games_played > k_factor_scaling, set to league.k_factor_min
     k_factor = ndb.FloatProperty(required=True)
     games_played = ndb.IntegerProperty(default=0)
 
@@ -47,7 +49,7 @@ def create_participant(user, league_id, name, rating=1400.0):
     return new_participant
 
 
-def update_participant(user, participant_id, league_id, name, rating):
+def update_participant(user, participant_id, league_id, name=None, rating=None):
     if not participant_id:
         raise ValueError('participant_id is required')
 
@@ -55,10 +57,12 @@ def update_participant(user, participant_id, league_id, name, rating):
     if not participant:
         raise ValueError('There is no participant for participant_id %s' % participant_id)
 
-    participant.user_id = user.user_id
-    participant.name = name
-    participant.league_id = league_id
-    participant.rating = rating
+    if name is not None:
+        participant.name = name
+
+    if rating is not None:
+        participant.rating = rating
+
     participant.put()
 
     return participant

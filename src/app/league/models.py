@@ -71,7 +71,8 @@ def create_league(user, name, rating_scheme, k_sensitivity, k_factor_scaling, de
     return new_league
 
 
-def update_league(user, league_id, name, rating_scheme, k_sensitivity, k_factor_scaling, description=None):
+def update_league(user, league_id, name=None, rating_scheme=None,
+                  k_sensitivity=None, k_factor_scaling=None, description=None):
     if not league_id:
         raise ValueError('league_id is required')
 
@@ -83,11 +84,15 @@ def update_league(user, league_id, name, rating_scheme, k_sensitivity, k_factor_
     if rating_scheme not in LeagueModel.scheme_choices:
         raise InvalidRatingSchemeException("Invalid rating scheme %s" % rating_scheme)
 
-    league.name = name
-    league.rating_scheme = rating_scheme
-    league.description = description
-    league.k_sensitivity = k_sensitivity
-    league.k_factor_scaling = k_factor_scaling
+    if name is not None:
+        league.name = name
+
+    if rating_scheme is not None:
+        league.rating_scheme = rating_scheme
+
+    if description is not None:
+        league.description = description
+
     league.put()
 
     return league

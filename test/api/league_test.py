@@ -157,8 +157,6 @@ class LeagueAPITests(BaseFlaskTestCase):
             'name': 'nep',
             'rating_scheme': 'type2',
             'description': 'aaaaa',
-            'k_sensitivity': 'Medium',
-            'k_factor_scaling': 20,
             'participant_count': 0,
         }
         response = self.app.put('/api/league/'+self.league.league_id)
@@ -168,9 +166,9 @@ class LeagueAPITests(BaseFlaskTestCase):
             u'rating_scheme': u'type2',
             u'name': u'nep',
             u'description': u'aaaaa',
-            u'k_sensitivity': 'Medium',
-            u'k_factor_scaling': 20,
-            u'participant_count': 0,
+            u'k_sensitivity': self.league.k_sensitivity,
+            u'k_factor_scaling': self.league.k_factor_scaling,
+            u'participant_count': self.league.participant_count,
         }
         self.assertEqual(expected_m, data)
 
