@@ -27,7 +27,7 @@ class CreateLeagueTests(BaseFlaskTestCase):
         self.assertTrue('LG-' in self.league.league_id)
         self.assertEqual(self.league.rating_scheme, 'ELO')
         self.assertEqual(self.league.k_sensitivity, LeagueModel.LOW_SENSITIVITY_SETTING)
-        self.assertEqual(self.league.k_factor_scaling, 10)
+        self.assertEqual(self.league.k_factor_scaling, 5)
         self.assertEqual(self.league.participant_count, 0)
 
 
