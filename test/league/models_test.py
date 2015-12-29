@@ -1,3 +1,4 @@
+from app.league.exceptions import LeagueNotFoundException
 from app.league.models import LeagueModel, create_league, update_league, delete_league
 from app.user.models import create_user
 from cases import BaseFlaskTestCase
@@ -13,10 +14,10 @@ class LeagueModelTests(BaseFlaskTestCase):
         pass
 
     def test_update_participant_count(self):
-        q = LeagueModel(league_id=LeagueModel.generate_id(), rating_scheme='ELO')
-        self.assertEquals(q.participant_count, 0)
-        q.update_participant_count(3)
-        self.assertEquals(q.participant_count, 3)
+        self.create_test_league()
+        self.assertEquals(self.league.participant_count, 0)
+        self.league.update_participant_count(3)
+        self.assertEquals(self.league.participant_count, 3)
 
 
 class CreateLeagueTests(BaseFlaskTestCase):
@@ -25,25 +26,33 @@ class CreateLeagueTests(BaseFlaskTestCase):
         self.assertEqual(self.league.name, 'Nep League')
         self.assertTrue('LG-' in self.league.league_id)
         self.assertEqual(self.league.rating_scheme, 'ELO')
+        self.assertEqual(self.league.k_sensitivity, LeagueModel.LOW_SENSITIVITY_SETTING)
+        self.assertEqual(self.league.k_factor_scaling, 5)
+        self.assertEqual(self.league.participant_count, 0)
 
 
 class UpdateLeagueTests(BaseFlaskTestCase):
     def test_raise_if_league_id_is_none(self):
         with self.assertRaises(ValueError):
-            update_league(create_user('Name'), league_id=None, name='League', rating_scheme='ELO')
+            update_league(create_user('Name'), league_id=None, name='League', rating_scheme='ELO',
+                          k_sensitivity='Medium', k_factor_scaling=20)
 
     def test_raise_if_invalid_league_id(self):
-        with self.assertRaises(ValueError):
-            update_league(create_user('Name'), league_id='Not A League ID', name='League', rating_scheme='ELO')
+        with self.assertRaises(LeagueNotFoundException):
+            update_league(create_user('Name'), league_id='Not A League ID', name='League', rating_scheme='ELO',
+                          k_sensitivity='Medium', k_factor_scaling=20)
 
     def test_update_league(self):
         self.create_test_league()
         self.assertEqual(self.league.name, 'Nep League')
         self.assertTrue('LG-' in self.league.league_id)
         self.assertEqual(self.league.rating_scheme, 'ELO')
-        update_league(self.user, self.league.league_id, name='Lastation League', rating_scheme='type1')
+        update_league(self.user, self.league.league_id, name='Lastation League', rating_scheme='type1',
+                      k_sensitivity='Medium', k_factor_scaling=20)
         self.assertEqual(self.league.name, 'Lastation League')
         self.assertEqual(self.league.rating_scheme, 'type1')
+        self.assertIsNotNone(self.league.k_sensitivity)
+        self.assertIsNotNone(self.league.k_factor_scaling)
 
 
 class DeleteLeagueTests(BaseFlaskTestCase):

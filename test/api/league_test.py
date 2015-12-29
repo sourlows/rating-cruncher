@@ -14,8 +14,10 @@ class LeagueListAPITests(BaseFlaskTestCase):
         self.create_test_user()
 
     def test_get_returns_all_leagues_associated_to_user(self):
-        league_n = create_league(self.user, name="Nep League", rating_scheme='ELO')
-        league_m = create_league(self.user, name="Noire League", rating_scheme='type1')
+        league_n = create_league(self.user, name="Nep League", rating_scheme='ELO', k_sensitivity='Medium',
+                                 k_factor_scaling=10)
+        league_m = create_league(self.user, name="Noire League", rating_scheme='type1', k_sensitivity='Medium',
+                                 k_factor_scaling=10)
 
         data = json.loads(self.app.get('/api/league/').data)
 
@@ -24,14 +26,18 @@ class LeagueListAPITests(BaseFlaskTestCase):
             'rating_scheme': league_n.rating_scheme,
             'name': league_n.name,
             'description': league_n.description,
-            'participant_count': league_n.participant_count
+            'participant_count': league_n.participant_count,
+            'k_sensitivity': league_n.k_sensitivity,
+            'k_factor_scaling': league_n.k_factor_scaling,
         }
         expected_m = {
             'league_id': league_m.league_id,
             'rating_scheme': league_m.rating_scheme,
             'name': league_m.name,
             'description': league_m.description,
-            'participant_count': league_m.participant_count
+            'participant_count': league_m.participant_count,
+            'k_sensitivity': league_m.k_sensitivity,
+            'k_factor_scaling': league_m.k_factor_scaling,
         }
 
         self.assertTrue(expected_n in data and
@@ -41,8 +47,10 @@ class LeagueListAPITests(BaseFlaskTestCase):
         self.create_test_user()
         different_user = create_user('gege', name='Nepgear', company_name='Planeptune')
 
-        league_n = create_league(different_user, name="Nep League", rating_scheme='ELO')
-        league_m = create_league(different_user, name="Noire League", rating_scheme='ELO')
+        league_n = create_league(different_user, name="Nep League", rating_scheme='ELO', k_sensitivity='Medium',
+                                 k_factor_scaling=10)
+        league_m = create_league(different_user, name="Noire League", rating_scheme='ELO', k_sensitivity='Medium',
+                                 k_factor_scaling=10)
 
         data = json.loads(self.app.get('/api/league/').data)
 
@@ -51,14 +59,18 @@ class LeagueListAPITests(BaseFlaskTestCase):
             'rating_scheme': league_n.rating_scheme,
             'name': league_n.name,
             'description': league_n.description,
-            'participant_count': league_n.participant_count
+            'participant_count': league_n.participant_count,
+            'k_sensitivity': league_n.k_sensitivity,
+            'k_factor_scaling': league_n.k_factor_scaling,
         }
         expected_m = {
             'league_id': league_m.league_id,
             'rating_scheme': league_m.rating_scheme,
             'name': league_m.name,
             'description': league_m.description,
-            'participant_count': league_m.participant_count
+            'participant_count': league_m.participant_count,
+            'k_sensitivity': league_m.k_sensitivity,
+            'k_factor_scaling': league_m.k_factor_scaling,
         }
         self.assertFalse(expected_n in data or
                          expected_m in data)
@@ -90,7 +102,9 @@ class LeagueListAPITests(BaseFlaskTestCase):
             'rating_scheme': self.league.rating_scheme,
             'name': self.league.name,
             'description': self.league.description,
-            'participant_count': self.league.participant_count
+            'participant_count': self.league.participant_count,
+            'k_sensitivity': self.league.k_sensitivity,
+            'k_factor_scaling': self.league.k_factor_scaling,
         }
         self.assertEqual(expected_l, data)
 
@@ -115,7 +129,9 @@ class LeagueAPITests(BaseFlaskTestCase):
             'rating_scheme': self.league.rating_scheme,
             'name': self.league.name,
             'description': self.league.description,
-            'participant_count': self.league.participant_count            
+            'participant_count': self.league.participant_count,
+            'k_sensitivity': self.league.k_sensitivity,
+            'k_factor_scaling': self.league.k_factor_scaling,
         }
         self.assertEqual(json.loads(self.app.get('/api/league/%s' % self.league.league_id).data), expected_l)
 
@@ -150,7 +166,9 @@ class LeagueAPITests(BaseFlaskTestCase):
             u'rating_scheme': u'type2',
             u'name': u'nep',
             u'description': u'aaaaa',
-            u'participant_count': 0,
+            u'k_sensitivity': self.league.k_sensitivity,
+            u'k_factor_scaling': self.league.k_factor_scaling,
+            u'participant_count': self.league.participant_count,
         }
         self.assertEqual(expected_m, data)
 

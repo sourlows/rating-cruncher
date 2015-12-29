@@ -37,7 +37,7 @@ class ParticipantListAPITests(BaseFlaskTestCase):
 
     def test_get_does_not_return_participants_not_in_league(self):
         self.create_test_participant()
-        different_league = create_league(self.user, 'New League', 'type2')
+        different_league = create_league(self.user, 'New League', 'type2', 'Medium', 10)
         participant = create_participant(user=self.user, league_id=different_league.league_id,
                                          name='Vert', rating=2200.0)
 

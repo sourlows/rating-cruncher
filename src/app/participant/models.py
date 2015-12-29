@@ -12,6 +12,11 @@ class ParticipantModel(BaseModel):
     name = ndb.StringProperty(indexed=False)
     rating = ndb.FloatProperty()
 
+    # set from League based on games_played; initially league.k_factor_initial
+    # if games_played > k_factor_scaling, set to league.k_factor_min
+    k_factor = ndb.FloatProperty(required=True)
+    games_played = ndb.IntegerProperty(default=0)
+
     @classmethod
     def generate_id(cls):
         """ Generate a unique id. """
@@ -31,15 +36,20 @@ class ParticipantModel(BaseModel):
 def create_participant(user, league_id, name, rating=1400.0):
     participant_id = ParticipantModel.generate_id()
     key = ParticipantModel.build_key(participant_id)
-    new_participant = ParticipantModel(key=key, participant_id=participant_id, league_id=league_id,
-                                       user_id=user.user_id, name=name, rating=rating)
-    new_participant.put()
     league = LeagueModel.build_key(league_id, user.key).get()
+
+    new_participant = ParticipantModel(key=key, participant_id=participant_id, league_id=league_id,
+                                       user_id=user.user_id, name=name, rating=rating, k_factor=league.k_factor_initial)
+
+    if league.k_factor_scaling == 0:
+        new_participant.k_factor = league.k_factor_min
+
+    new_participant.put()
     league.update_participant_count(1)
     return new_participant
 
 
-def update_participant(user, participant_id, league_id, name, rating):
+def update_participant(user, participant_id, league_id, name=None, rating=None):
     if not participant_id:
         raise ValueError('participant_id is required')
 
@@ -47,10 +57,12 @@ def update_participant(user, participant_id, league_id, name, rating):
     if not participant:
         raise ValueError('There is no participant for participant_id %s' % participant_id)
 
-    participant.user_id = user.user_id
-    participant.name = name
-    participant.league_id = league_id
-    participant.rating = rating
+    if name is not None:
+        participant.name = name
+
+    if rating is not None:
+        participant.rating = rating
+
     participant.put()
 
     return participant

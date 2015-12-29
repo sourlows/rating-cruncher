@@ -1,4 +1,5 @@
 from app.api.base import BaseAuthResource
+from app.league.models import LeagueModel
 from app.participant.models import ParticipantModel, create_participant, delete_participant
 from app.participant.rating_calculator import RatingCalculator
 from flask.ext.restful import marshal, fields
@@ -38,8 +39,9 @@ class ParticipantAPI(BaseAuthResource):
         opponent = ParticipantModel.build_key(self.args.get('opponent_id')).get()
         if not participant or not opponent:
             return 'Invalid participant id', 404
+        league = LeagueModel.build_key(league_id, self.user.key).get()
         winner = ParticipantModel.build_key(self.args.get('winner')).get() if self.args.get('winner') else None
-        participant, opponent = RatingCalculator(participant, opponent, winner).process()
+        participant, opponent = RatingCalculator(league, participant, opponent, winner).process()
         return marshal(participant, participant_template)
 
     def delete(self, league_id, participant_id):
