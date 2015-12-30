@@ -15,7 +15,6 @@ PARSER.add_argument('-t', action='store_true', help='Run pylint on the test code
 
 ARGS = PARSER.parse_args()
 if ARGS.s:
-    PYLINTRC = 'src/pylintrc'
     Run(['--rcfile=src\\pylintrc', 'src\\app'])
 if ARGS.t:
     Run(['--rcfile=test\\pylintrc', 'test\\'])
