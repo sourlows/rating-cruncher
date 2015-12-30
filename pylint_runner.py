@@ -2,9 +2,6 @@ import argparse
 from pylint.lint import Run
 import sys
 
-USAGE_INFO = 'Usage to run pylint on src:  pylint -s\n' \
-          'Usage to run pylint on test: pylint -t'
-
 sys.path.insert(0, 'C:\\Program Files (x86)\\Google\\google_appengine')
 sys.path.insert(0, 'src/')
 sys.path.insert(0, 'src/lib/')
