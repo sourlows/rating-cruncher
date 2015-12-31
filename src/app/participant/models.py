@@ -1,9 +1,8 @@
 from app.models import BaseModel
+from app.league.models import LeagueModel
 from google.appengine.ext import ndb
 
 import tinyid
-from app.league.models import LeagueModel
-
 
 class ParticipantModel(BaseModel):
     participant_id = ndb.StringProperty(required=True)
@@ -49,7 +48,7 @@ def create_participant(user, league_id, name, rating=1400.0):
     return new_participant
 
 
-def update_participant(user, participant_id, league_id, name=None, rating=None):
+def update_participant(participant_id, name=None, rating=None):
     if not participant_id:
         raise ValueError('participant_id is required')
 

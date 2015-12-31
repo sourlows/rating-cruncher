@@ -8,7 +8,7 @@ import json
 class ParticipantListAPITests(BaseFlaskTestCase):
     def setUp(self):
         super(ParticipantListAPITests, self).setUp()
-        self.auth_mock = self.mock_function_in_setup('app.api.base.api_auth.authenticate', return_value=True)
+        self.auth_mock = self.mock_function_in_setup('app.api.base.API_AUTH.authenticate', return_value=True)
         self.args_mock = self.mock_function_in_setup('app.api.base.reqparse.RequestParser.parse_args',
                                                      return_value={'username': 'nepnep'})
         self.create_test_user()
@@ -77,7 +77,7 @@ class ParticipantListAPITests(BaseFlaskTestCase):
 class ParticipantAPITests(BaseFlaskTestCase):
     def setUp(self):
         super(ParticipantAPITests, self).setUp()
-        self.auth_mock = self.mock_function_in_setup('app.api.base.api_auth.authenticate', return_value=True)
+        self.auth_mock = self.mock_function_in_setup('app.api.base.API_AUTH.authenticate', return_value=True)
         self.args_mock = self.mock_function_in_setup('app.api.base.reqparse.RequestParser.parse_args',
                                                      return_value={'username': 'nepnep'})
         self.create_test_league()

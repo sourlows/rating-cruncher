@@ -5,24 +5,24 @@ from google.appengine.api import users
 
 from app.api.participant import ParticipantAPI, ParticipantListAPI
 from flask import Flask, g, render_template
-from app.user.views import get_authed_user, user_module
-from app.league.views import league_module
-from app.api.base import api_module
+from app.user.views import get_authed_user, USER_MODULE
+from app.league.views import LEAGUE_MODULE
+from app.api.base import API_MODULE
 from flask.ext.restful import Api
 from app.api.league import LeagueListAPI, LeagueAPI
 
 
 app = Flask(__name__)
-app.register_blueprint(user_module)
-app.register_blueprint(league_module)
+app.register_blueprint(USER_MODULE)
+app.register_blueprint(LEAGUE_MODULE)
 
-api = Api(api_module)
+api = Api(API_MODULE)
 api.add_resource(LeagueListAPI, '/league/')
 api.add_resource(LeagueAPI, '/league/<string:league_id>')
 api.add_resource(ParticipantListAPI, '/participant/<string:league_id>')
 api.add_resource(ParticipantAPI, '/participant/<string:league_id>/<string:participant_id>')
 
-app.register_blueprint(api_module)
+app.register_blueprint(API_MODULE)
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
 

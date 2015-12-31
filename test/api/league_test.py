@@ -8,7 +8,7 @@ from mock import mock
 class LeagueListAPITests(BaseFlaskTestCase):
     def setUp(self):
         super(LeagueListAPITests, self).setUp()
-        self.auth_mock = self.mock_function_in_setup('app.api.base.api_auth.authenticate', return_value=True)
+        self.auth_mock = self.mock_function_in_setup('app.api.base.API_AUTH.authenticate', return_value=True)
         self.args_mock = self.mock_function_in_setup('app.api.base.reqparse.RequestParser.parse_args',
                                                      return_value={'username': 'nepnep'})
         self.create_test_user()
@@ -112,7 +112,7 @@ class LeagueListAPITests(BaseFlaskTestCase):
 class LeagueAPITests(BaseFlaskTestCase):
     def setUp(self):
         super(LeagueAPITests, self).setUp()
-        self.auth_mock = self.mock_function_in_setup('app.api.base.api_auth.authenticate', return_value=True)
+        self.auth_mock = self.mock_function_in_setup('app.api.base.API_AUTH.authenticate', return_value=True)
         self.args_mock = self.mock_function_in_setup('app.api.base.reqparse.RequestParser.parse_args',
                                                      return_value={'username': 'nepnep'})
         self.create_test_user()

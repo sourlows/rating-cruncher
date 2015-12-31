@@ -20,19 +20,19 @@ class UpdateParticipantTests(BaseFlaskTestCase):
         self.create_test_participant()
         self.assertEqual(self.participant.name, 'Nepgear')
         self.assertEqual(self.participant.rating, 1400.0)
-        update_participant(self.user, self.participant.participant_id, self.league.league_id, 'Noire', 1200.0)
+        update_participant(self.participant.participant_id, 'Noire', 1200.0)
         self.assertEqual(self.participant.name, 'Noire')
         self.assertEqual(self.participant.rating, 1200.0)
 
     def test_raises_if_not_participant_id(self):
         with self.assertRaises(ValueError):
             self.create_test_participant()
-            update_participant(self.user, None, self.league.league_id, self.participant.name, self.participant.rating)
+            update_participant(None, self.participant.name, self.participant.rating)
 
     def test_raises_if_not_participant(self):
         with self.assertRaises(ValueError):
             self.create_test_league()
-            update_participant(self.user, ParticipantModel.generate_id(), self.league.league_id, 'Name', 1400.0)
+            update_participant(ParticipantModel.generate_id(), 'Name', 1400.0)
 
 
 class DeleteParticipantTests(BaseFlaskTestCase):
