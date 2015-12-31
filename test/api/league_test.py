@@ -88,22 +88,28 @@ class LeagueListAPITests(BaseFlaskTestCase):
         self.assertEqual(response.data, '"Invalid rating scheme %s"\n' % self.args_mock.return_value['rating_scheme'])
 
     def test_post_new_league_when_created_successfully(self):
-        self.create_test_league()
-        self.mock_function_in_setup('app.api.league.create_league', return_value=self.league)
+        self.create_test_user()
         self.args_mock.return_value = {
-            'username': 'nepnep',
+            'username': self.user.user_id,
+            'name': 'Nep_League',
+            'rating_scheme': 'ELO',
+            'description': 'omg nep-nep\'s league',
+            'participant_count': 0,
+            'k_sensitivity': 'Low',
+            'k_factor_scaling': 10,
         }
         response = self.app.post('/api/league/')
         self.assertEqual(response.status_code, 200)
+
         data = json.loads(response.data)
         expected_l = {
-            'league_id': self.league.league_id,
-            'rating_scheme': self.league.rating_scheme,
-            'name': self.league.name,
-            'description': self.league.description,
-            'participant_count': self.league.participant_count,
-            'k_sensitivity': self.league.k_sensitivity,
-            'k_factor_scaling': self.league.k_factor_scaling,
+            u'league_id': data.get(u'league_id'),
+            u'name': u'Nep_League',
+            u'rating_scheme': u'ELO',
+            u'description': u'omg nep-nep\'s league',
+            u'participant_count': 0,
+            u'k_sensitivity': u'Low',
+            u'k_factor_scaling': 10,
         }
         self.assertEqual(expected_l, data)
 
