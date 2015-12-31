@@ -49,5 +49,4 @@ notes=FIXME,XXX,TODO
 reports=n
 include-ids=y
 [MASTER]
-# Can safely ignore libs - VBC doesn't manage the code that lives in these dirs.
 ignore=lib
