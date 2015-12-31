@@ -7,12 +7,19 @@ Help for pylint_runner.py can be accessed with:
 Which gives information about all of the available options.
 
 Pylint code analysis can be performed all of the source code with:
-    python pylint_runner.py -s
+
+```    
+python pylint_runner.py -s
+```
+
 And on all of the tests with:
-    python pylint_runner.py -t
+```
+python pylint_runner.py -t
+```
 
 Tests can be run on all of the source code by calling test_runner.py:
-    python test_runner.py
-
+```
+python test_runner.py
+```
 ## Author
 Dustin Walker
