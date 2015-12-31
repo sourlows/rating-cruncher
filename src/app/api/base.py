@@ -1,13 +1,13 @@
 from flask import jsonify, make_response, Blueprint
-from flask.ext.httpauth.flask_httpauth import HTTPBasicAuth
+from flask_httpauth.flask_httpauth import HTTPBasicAuth
 from app.user.models import UserModel
-from flask.ext.restful import Resource, reqparse
+from flask_restful import Resource, reqparse
 
-api_auth = HTTPBasicAuth()
-api_module = Blueprint('api', __name__, url_prefix='/api')
+API_AUTH = HTTPBasicAuth()
+API_MODULE = Blueprint('api', __name__, url_prefix='/api')
 
 
-@api_auth.get_password
+@API_AUTH.get_password
 def get_pw(username):
     user = UserModel.build_key(user_id=username).get()
     if user:
@@ -15,7 +15,7 @@ def get_pw(username):
     return None
 
 
-@api_auth.error_handler
+@API_AUTH.error_handler
 def unauthorized():
     return make_response(jsonify({'error': 'Unauthorized access'}), 401)
 
@@ -27,7 +27,7 @@ class BaseAuthResource(Resource):
     OPTIONAL_ARGS defines a set of argument names which are optional for this resource.
     self.user is the user object corresponding to the request's api user, it is available to all inheritors
     """
-    decorators = [api_auth.login_required]
+    decorators = [API_AUTH.login_required]
 
     API_USER = 'username'
 

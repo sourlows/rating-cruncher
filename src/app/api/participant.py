@@ -1,10 +1,10 @@
+from flask_restful import marshal, fields
 from app.api.base import BaseAuthResource
 from app.league.models import LeagueModel
 from app.participant.models import ParticipantModel, create_participant, delete_participant
 from app.participant.rating_calculator import RatingCalculator
-from flask.ext.restful import marshal, fields
 
-participant_template = {
+PARTICIPANT_TEMPLATE = {
     'league_id': fields.String,
     'participant_id': fields.String,
     'name': fields.String,
@@ -17,12 +17,12 @@ class ParticipantListAPI(BaseAuthResource):
 
     def get(self, league_id):
         participants = ParticipantModel.query(getattr(ParticipantModel, 'league_id') == league_id).fetch()
-        return [marshal(participant, participant_template) for participant in participants]
+        return [marshal(participant, PARTICIPANT_TEMPLATE) for participant in participants]
 
     def post(self, league_id):
         new_participant = create_participant(self.user, league_id, self.args.get('name'),
                                              rating=float(self.args.get('rating')))
-        return marshal(new_participant, participant_template)
+        return marshal(new_participant, PARTICIPANT_TEMPLATE)
 
 
 class ParticipantAPI(BaseAuthResource):
@@ -32,7 +32,7 @@ class ParticipantAPI(BaseAuthResource):
         participant = ParticipantModel.build_key(participant_id).get()
         if not participant:
             return 'Participant not found for %s' % participant_id, 404
-        return marshal(participant, participant_template)
+        return marshal(participant, PARTICIPANT_TEMPLATE)
 
     def put(self, league_id, participant_id):
         participant = ParticipantModel.build_key(participant_id).get()
@@ -42,7 +42,7 @@ class ParticipantAPI(BaseAuthResource):
         league = LeagueModel.build_key(league_id, self.user.key).get()
         winner = ParticipantModel.build_key(self.args.get('winner')).get() if self.args.get('winner') else None
         participant, opponent = RatingCalculator(league, participant, opponent, winner).process()
-        return marshal(participant, participant_template)
+        return marshal(participant, PARTICIPANT_TEMPLATE)
 
     def delete(self, league_id, participant_id):
         try:
