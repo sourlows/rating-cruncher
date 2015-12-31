@@ -14,6 +14,8 @@ PARSER.add_argument('-s', action='store_true', help='Run pylint on the source co
 PARSER.add_argument('-t', action='store_true', help='Run pylint on the test code.')
 
 ARGS = PARSER.parse_args()
+if not ARGS.s and not ARGS.t:
+    PARSER.print_help()
 if ARGS.s:
     Run(['--rcfile=src\\pylintrc', 'src\\'])
 if ARGS.t:
