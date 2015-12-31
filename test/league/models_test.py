@@ -1,5 +1,5 @@
 from app.league.exceptions import LeagueNotFoundException
-from app.league.models import LeagueModel, create_league, update_league, delete_league
+from app.league.models import LeagueModel, update_league, delete_league
 from app.user.models import create_user
 from cases import BaseFlaskTestCase
 

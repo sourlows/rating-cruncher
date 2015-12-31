@@ -1,13 +1,14 @@
-from google.appengine.datastore.datastore_stub_util import PseudoRandomHRConsistencyPolicy
-
+import os
 import unittest
+
+from google.appengine.datastore.datastore_stub_util import PseudoRandomHRConsistencyPolicy
+from google.appengine.ext import testbed
+
+import main
+import mock
 from app.league.models import create_league
 from app.participant.models import create_participant
 from app.user.models import create_user
-import main
-import mock
-from google.appengine.ext import testbed
-import os
 
 
 class BaseGAETestCase(unittest.TestCase):
