@@ -2,7 +2,6 @@ import json
 from app.league.models import create_league
 from app.user.models import create_user
 from cases import BaseFlaskTestCase
-from mock import mock
 
 
 class LeagueListAPITests(BaseFlaskTestCase):
@@ -124,7 +123,7 @@ class LeagueAPITests(BaseFlaskTestCase):
 
     def test_get_returns_league_for_specified_league_id(self):
         self.create_test_league()
-        expected_l = {            
+        expected_l = {
             'league_id': self.league.league_id,
             'rating_scheme': self.league.rating_scheme,
             'name': self.league.name,

@@ -1,8 +1,8 @@
+import json
+
 from app.league.models import create_league
 from app.participant.models import create_participant
-from app.user.models import create_user
 from cases import BaseFlaskTestCase
-import json
 
 
 class ParticipantListAPITests(BaseFlaskTestCase):
@@ -57,7 +57,7 @@ class ParticipantListAPITests(BaseFlaskTestCase):
         }
 
         self.assertTrue(expected_participant in returned_participants_list and
-                        not (unexpected_participant in returned_participants_list))
+                        unexpected_participant not in returned_participants_list)
 
     def test_get_returns_empty_list_if_league_has_no_participants(self):
         self.create_test_league()
