@@ -4,6 +4,7 @@
 from google.appengine.api import users
 
 from app.api.base import API_MODULE
+from app.api.leaderboard import LeaderboardAPI
 from app.api.league import LeagueListAPI, LeagueAPI
 from app.api.participant import ParticipantAPI, ParticipantListAPI
 from app.league.views import LEAGUE_MODULE
@@ -21,6 +22,7 @@ API.add_resource(LeagueListAPI, '/league/')
 API.add_resource(LeagueAPI, '/league/<string:league_id>')
 API.add_resource(ParticipantListAPI, '/participant/<string:league_id>')
 API.add_resource(ParticipantAPI, '/participant/<string:league_id>/<string:participant_id>')
+API.add_resource(LeaderboardAPI, '/leaderboard/<string:league_id>')
 
 APP.register_blueprint(API_MODULE)
 # Note: We don't need to call run() since our application is embedded within

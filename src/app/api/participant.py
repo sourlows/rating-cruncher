@@ -20,8 +20,11 @@ class ParticipantListAPI(BaseAuthResource):
         return [marshal(participant, PARTICIPANT_TEMPLATE) for participant in participants]
 
     def post(self, league_id):
-        new_participant = create_participant(self.user, league_id, self.args.get('name'),
-                                             rating=float(self.args.get('rating')))
+        rating = self.args.get('rating')
+        if rating:
+            new_participant = create_participant(self.user, league_id, self.args.get('name'), float(rating))
+        else:
+            new_participant = create_participant(self.user, league_id, self.args.get('name'))
         return marshal(new_participant, PARTICIPANT_TEMPLATE)
 
 

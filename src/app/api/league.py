@@ -26,7 +26,7 @@ class LeagueListAPI(BaseAuthResource):
         """ create a new league """
         try:
             new_league = create_league(self.user, self.args.get('name'), self.args.get('rating_scheme'),
-                                       self.args.get('k_sensitivity'), self.args.get('k_factor_scaling'),
+                                       self.args.get('k_sensitivity'), int(self.args.get('k_factor_scaling')),
                                        description=self.args.get('description'))
         except InvalidRatingSchemeException:
             return 'Invalid rating scheme %s' % self.args.get('rating_scheme'), 400

@@ -8,7 +8,7 @@ class ParticipantModel(BaseModel):
     participant_id = ndb.StringProperty(required=True)
     league_id = ndb.StringProperty(required=True)
     user_id = ndb.StringProperty(required=True)
-    name = ndb.StringProperty(indexed=False)
+    name = ndb.StringProperty()
     rating = ndb.FloatProperty()
 
     # set from League based on games_played; initially league.k_factor_initial
