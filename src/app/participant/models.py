@@ -28,6 +28,7 @@ class ParticipantModel(BaseModel):
     @classmethod
     def build_key(cls, participant_id):
         """ Builds a key in the default namespace. """
+        # pylint: disable=W0221
         key = ndb.model.Key(cls.__name__, participant_id)
         return key
 

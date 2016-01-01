@@ -3,11 +3,11 @@
 # Import the Flask Framework
 from google.appengine.api import users
 
-from src.app.api.base import API_MODULE
-from src.app.api.league import LeagueListAPI, LeagueAPI
-from src.app.api.participant import ParticipantAPI, ParticipantListAPI
-from src.app.league.views import LEAGUE_MODULE
-from src.app.user.views import get_authed_user, USER_MODULE
+from app.api.base import API_MODULE
+from app.api.league import LeagueListAPI, LeagueAPI
+from app.api.participant import ParticipantAPI, ParticipantListAPI
+from app.league.views import LEAGUE_MODULE
+from app.user.views import get_authed_user, USER_MODULE
 from flask import Flask, g, render_template
 from flask_restful import Api
 
@@ -29,6 +29,7 @@ APP.register_blueprint(API_MODULE)
 
 @APP.before_request
 def before_request(*args, **kwargs):
+    # pylint: disable=W0612,W0613
     g.user = get_authed_user()
     g.is_logged_in = bool(g.user)
     g.auth_url = users.create_logout_url('/') if g.is_logged_in else users.create_login_url('/user/dashboard/')
@@ -46,6 +47,7 @@ def index():
 
 @APP.errorhandler(404)
 def page_not_found(e):
+    # pylint: disable=W0612,W0613
     """Return a custom 404 error."""
     return 'Sorry, Nothing at this URL.', 404
 
