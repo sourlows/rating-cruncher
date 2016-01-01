@@ -12,10 +12,17 @@ class RatingCalculator(object):
         participant_is_winner = bool(self.participant == self.winner)
         if not self.winner:
             participant_score = 0.5
+            self.participant.ties += 1
+            self.opponent.ties += 1
         elif participant_is_winner:
             participant_score = 1.0
+            self.participant.wins += 1
+            self.opponent.losses += 1
         else:
             participant_score = 0.0
+            self.participant.losses += 1
+            self.opponent.wins += 1
+            
         opponent_score = 1.0 - participant_score
 
         self.participant.rating += self.participant.k_factor * (participant_score - expected_score_participant)
