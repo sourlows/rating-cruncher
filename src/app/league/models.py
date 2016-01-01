@@ -50,6 +50,7 @@ class LeagueModel(BaseModel):
     @classmethod
     def build_key(cls, league_id, user_key):
         """ Builds a key in the default namespace. """
+        # pylint: disable=W0221
         key = ndb.model.Key(cls.__name__, league_id, parent=user_key)
         return key
 

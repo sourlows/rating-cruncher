@@ -29,6 +29,7 @@ class ParticipantAPI(BaseAuthResource):
     OPTIONAL_ARGS = ['name', 'rating', 'opponent_id', 'winner']
 
     def get(self, league_id, participant_id):
+        # pylint: disable=W0612,W0613
         participant = ParticipantModel.build_key(participant_id).get()
         if not participant:
             return 'Participant not found for %s' % participant_id, 404
@@ -45,6 +46,7 @@ class ParticipantAPI(BaseAuthResource):
         return marshal(participant, PARTICIPANT_TEMPLATE)
 
     def delete(self, league_id, participant_id):
+        # pylint: disable=W0612,W0613
         try:
             delete_participant(self.user, participant_id)
         except ValueError:

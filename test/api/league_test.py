@@ -91,26 +91,19 @@ class LeagueListAPITests(BaseFlaskTestCase):
         self.create_test_league()
         self.mock_function_in_setup('app.api.league.create_league', return_value=self.league)
         self.args_mock.return_value = {
-            'username': self.user.user_id,
+            'username': 'nepnep',
+        }
+        response = self.app.post('/api/league/')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        expected_l = {
+            'league_id': self.league.league_id,
             'rating_scheme': self.league.rating_scheme,
             'name': self.league.name,
             'description': self.league.description,
             'participant_count': self.league.participant_count,
             'k_sensitivity': self.league.k_sensitivity,
             'k_factor_scaling': self.league.k_factor_scaling,
-
-        }
-        response = self.app.post('/api/league/')
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.data)
-        expected_l = {
-            u'league_id': self.league.league_id,
-            u'rating_scheme': self.league.rating_scheme,
-            u'name': self.league.name,
-            u'description': self.league.description,
-            u'participant_count': self.league.participant_count,
-            u'k_sensitivity': self.league.k_sensitivity,
-            u'k_factor_scaling': self.league.k_factor_scaling,
         }
         self.assertEqual(expected_l, data)
 

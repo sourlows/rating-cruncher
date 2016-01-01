@@ -17,6 +17,6 @@ ARGS = PARSER.parse_args()
 if not ARGS.s and not ARGS.t:
     PARSER.print_help()
 if ARGS.s:
-    Run(['--rcfile=src\\pylintrc', 'src\\'])
+    Run(['--rcfile=src\\pylintrc', 'src\\app'])
 if ARGS.t:
     Run(['--rcfile=test\\pylintrc', 'test\\'])
