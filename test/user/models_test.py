@@ -1,4 +1,4 @@
-from app.user.models import create_user, UserModel, update_user
+from app.user.models import create_user, update_user
 from cases import BaseFlaskTestCase
 
 

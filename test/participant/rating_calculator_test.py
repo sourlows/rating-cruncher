@@ -29,8 +29,8 @@ class RatingCalculatorTests(BaseFlaskTestCase):
         self.assertEquals(self.opponent.rating, 1390.0)
 
     def test_playing_k_factor_scaling_games_reduces_k_factor_to_min(self):
-        for x in xrange(0, int(self.league.k_factor_scaling)):
-                RatingCalculator(self.league, self.participant, self.opponent, winner=self.participant).process()
+        for _ in xrange(0, int(self.league.k_factor_scaling)):
+            RatingCalculator(self.league, self.participant, self.opponent, winner=self.participant).process()
 
         self.assertEquals(self.participant.k_factor, self.league.k_factor_min)
         self.assertEquals(self.opponent.k_factor, self.league.k_factor_min)

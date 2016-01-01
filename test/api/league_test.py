@@ -2,13 +2,12 @@ import json
 from app.league.models import create_league
 from app.user.models import create_user
 from cases import BaseFlaskTestCase
-from mock import mock
 
 
 class LeagueListAPITests(BaseFlaskTestCase):
     def setUp(self):
         super(LeagueListAPITests, self).setUp()
-        self.auth_mock = self.mock_function_in_setup('app.api.base.api_auth.authenticate', return_value=True)
+        self.auth_mock = self.mock_function_in_setup('app.api.base.API_AUTH.authenticate', return_value=True)
         self.args_mock = self.mock_function_in_setup('app.api.base.reqparse.RequestParser.parse_args',
                                                      return_value={'username': 'nepnep'})
         self.create_test_user()
@@ -112,7 +111,7 @@ class LeagueListAPITests(BaseFlaskTestCase):
 class LeagueAPITests(BaseFlaskTestCase):
     def setUp(self):
         super(LeagueAPITests, self).setUp()
-        self.auth_mock = self.mock_function_in_setup('app.api.base.api_auth.authenticate', return_value=True)
+        self.auth_mock = self.mock_function_in_setup('app.api.base.API_AUTH.authenticate', return_value=True)
         self.args_mock = self.mock_function_in_setup('app.api.base.reqparse.RequestParser.parse_args',
                                                      return_value={'username': 'nepnep'})
         self.create_test_user()
@@ -124,7 +123,7 @@ class LeagueAPITests(BaseFlaskTestCase):
 
     def test_get_returns_league_for_specified_league_id(self):
         self.create_test_league()
-        expected_l = {            
+        expected_l = {
             'league_id': self.league.league_id,
             'rating_scheme': self.league.rating_scheme,
             'name': self.league.name,

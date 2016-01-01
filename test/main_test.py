@@ -1,4 +1,4 @@
-from cases import BaseFlaskTestCase
+from test.cases import BaseFlaskTestCase
 
 
 class IndexTests(BaseFlaskTestCase):

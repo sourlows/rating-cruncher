@@ -4,7 +4,7 @@ from app.user.forms import SettingsForm
 from app.user.models import UserModel, create_user, update_user
 from flask import Blueprint, redirect, request, g, url_for, render_template
 
-user_module = Blueprint('user', __name__, url_prefix='/user')
+USER_MODULE = Blueprint('user', __name__, url_prefix='/user')
 
 
 def login_required(func):
@@ -29,7 +29,7 @@ def get_authed_user():
     return None
 
 
-@user_module.route('/settings/', methods=['GET', 'POST'])
+@USER_MODULE.route('/settings/', methods=['GET', 'POST'])
 @login_required
 def settings():
     form = SettingsForm(request.form, obj=g.user)
@@ -41,7 +41,7 @@ def settings():
     return render_template('user/settings.html', form=form, **g.context)
 
 
-@user_module.route('/dashboard/')
+@USER_MODULE.route('/dashboard/')
 @login_required
 def user_dashboard():
     if not g.is_logged_in:

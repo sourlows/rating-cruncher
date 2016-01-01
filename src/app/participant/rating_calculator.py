@@ -1,4 +1,4 @@
-class RatingCalculator:
+class RatingCalculator(object):
     def __init__(self, league, participant, opponent, winner=None):
         self.participant = participant
         self.opponent = opponent
@@ -24,7 +24,7 @@ class RatingCalculator:
         self.participant.games_played += 1
         self.opponent.games_played += 1
 
-        if not self.league.k_factor_scaling == 0:
+        if self.league.k_factor_scaling != 0:
             k_factor_reduction = (self.league.k_factor_initial - self.league.k_factor_min) / \
                                                                    self.league.k_factor_scaling
             if self.participant.games_played <= self.league.k_factor_scaling:

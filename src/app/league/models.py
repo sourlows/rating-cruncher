@@ -1,7 +1,7 @@
 from app.league.exceptions import InvalidRatingSchemeException, LeagueNotFoundException, InvalidKSensitivityException
-import tinyid
-from google.appengine.ext import ndb
 from app.models import BaseModel
+from google.appengine.ext import ndb
+import tinyid
 
 
 class LeagueModel(BaseModel):
@@ -50,6 +50,7 @@ class LeagueModel(BaseModel):
     @classmethod
     def build_key(cls, league_id, user_key):
         """ Builds a key in the default namespace. """
+        # pylint: disable=W0221
         key = ndb.model.Key(cls.__name__, league_id, parent=user_key)
         return key
 
@@ -71,14 +72,13 @@ def create_league(user, name, rating_scheme, k_sensitivity, k_factor_scaling, de
     return new_league
 
 
-def update_league(user, league_id, name=None, rating_scheme=None,
-                  k_sensitivity=None, k_factor_scaling=None, description=None):
+def update_league(user, league_id, name=None, rating_scheme=None, description=None):
     if not league_id:
         raise ValueError('league_id is required')
 
     key = LeagueModel.build_key(league_id, user.key)
     league = key.get()
-    
+
     if not league:
         raise LeagueNotFoundException("There is no league for league_id %s" % league_id)
     if rating_scheme not in LeagueModel.scheme_choices:
@@ -104,4 +104,3 @@ def delete_league(user, league_id):
         raise LeagueNotFoundException()
     else:
         return key.delete()
-
