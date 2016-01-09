@@ -1,8 +1,6 @@
-from google.appengine.datastore import datastore_query
-
-from app.api.base import BaseAuthResource
+from app.api.base import BaseAuthResource, StringArgument, IntegerArgument, DatastoreCursorArgument
 from app.participant.models import ParticipantModel
-from flask_restful import fields, marshal, reqparse
+from flask_restful import fields, marshal
 
 LEADERBOARD_TEMPLATE = {
     'name': fields.String,
@@ -20,21 +18,19 @@ SORT_OPTIONS = ['name', 'rating', 'games_played', 'k_factor', 'wins', 'losses', 
 
 
 class LeaderboardAPI(BaseAuthResource):
-    OPTIONAL_ARGS = ['sort_direction', 'sort_by', 'page_size', 'cursor']
+    ARGUMENTS = frozenset([
+        StringArgument('sort_direction'),
+        StringArgument('sort_by'),
+        IntegerArgument('page_size'),
+        DatastoreCursorArgument('cursor'),
+    ])
 
     def get(self, league_id):
         """ Return a sorted leaderboard representing participants in a league """
-        parser = reqparse.RequestParser()
-        parser.add_argument('sort_direction')
-        parser.add_argument('sort_by')
-        parser.add_argument('page_size', type=int)
-        parser.add_argument('cursor', type=datastore_query.Cursor)
-        args = parser.parse_args()
-
-        sort_by = args['sort_by']
-        sort_direction = args['sort_direction']
-        cursor = args['cursor']
-        page_size = args['page_size']
+        sort_by = self.args.get('sort_by')
+        sort_direction = self.args.get('sort_direction')
+        cursor = self.args.get('cursor')
+        page_size = self.args.get('page_size')
 
         if sort_by and hasattr(ParticipantModel, sort_by) and sort_by in SORT_OPTIONS:
             sort_by = getattr(ParticipantModel, sort_by)

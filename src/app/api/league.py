@@ -1,5 +1,5 @@
 from app.league.exceptions import LeagueNotFoundException, InvalidRatingSchemeException
-from app.api.base import BaseAuthResource
+from app.api.base import BaseAuthResource, StringArgument, IntegerArgument
 from app.league.models import LeagueModel, create_league, update_league, delete_league
 from flask_restful import fields, marshal
 
@@ -15,7 +15,13 @@ LEAGUE_TEMPLATE = {
 
 
 class LeagueListAPI(BaseAuthResource):
-    OPTIONAL_ARGS = ['name', 'rating_scheme', 'k_sensitivity', 'k_factor_scaling', 'description']
+    ARGUMENTS = frozenset([
+        StringArgument('name', required=True),
+        StringArgument('rating_scheme'),
+        StringArgument('k_sensitivity'),
+        IntegerArgument('k_factor_scaling'),
+        StringArgument('description'),
+    ])
 
     def get(self):
         """ return all leagues associated with the user """
@@ -26,7 +32,7 @@ class LeagueListAPI(BaseAuthResource):
         """ create a new league """
         try:
             new_league = create_league(self.user, self.args.get('name'), self.args.get('rating_scheme'),
-                                       self.args.get('k_sensitivity'), int(self.args.get('k_factor_scaling')),
+                                       self.args.get('k_sensitivity'), self.args.get('k_factor_scaling'),
                                        description=self.args.get('description'))
         except InvalidRatingSchemeException:
             return 'Invalid rating scheme %s' % self.args.get('rating_scheme'), 400
@@ -34,7 +40,11 @@ class LeagueListAPI(BaseAuthResource):
 
 
 class LeagueAPI(BaseAuthResource):
-    OPTIONAL_ARGS = ['name', 'rating_scheme', 'k_sensitivity', 'k_factor_scaling', 'description']
+    ARGUMENTS = frozenset([
+        StringArgument('name'),
+        StringArgument('rating_scheme'),
+        StringArgument('description'),
+    ])
 
     def get(self, league_id):
         """ return the specified league """
