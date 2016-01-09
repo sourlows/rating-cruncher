@@ -38,8 +38,10 @@ class LeaderboardAPI(BaseAuthResource):
 
         if sort_by and hasattr(ParticipantModel, sort_by) and sort_by in SORT_OPTIONS:
             sort_by = getattr(ParticipantModel, sort_by)
-        else:
+        elif sort_by is None:
             sort_by = getattr(ParticipantModel, 'rating')
+        else:
+            return 'Invalid sort_by option %s' % sort_by, 400
 
         if sort_direction == SORT_DESCENDING or not sort_direction:
             leaderboard = ParticipantModel.query(getattr(ParticipantModel, 'league_id') == league_id).order(-sort_by)
@@ -48,6 +50,9 @@ class LeaderboardAPI(BaseAuthResource):
         else:
             return 'Invalid sort direction %s' % sort_direction, 400
 
-        results, cursor, more = leaderboard.fetch_page(page_size=int(page_size), start_cursor=cursor)
+        results, cursor, more = leaderboard.fetch_page(page_size=page_size, start_cursor=cursor)
 
-        return [marshal(l, LEADERBOARD_TEMPLATE) for l in results]
+        return {
+            'leaderboard': [marshal(l, LEADERBOARD_TEMPLATE) for l in results],
+            'cursor': cursor
+        }
