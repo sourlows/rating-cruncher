@@ -8,13 +8,16 @@ class ParticipantModel(BaseModel):
     participant_id = ndb.StringProperty(required=True)
     league_id = ndb.StringProperty(required=True)
     user_id = ndb.StringProperty(required=True)
-    name = ndb.StringProperty(indexed=False)
+    name = ndb.StringProperty()
     rating = ndb.FloatProperty()
 
     # set from League based on games_played; initially league.k_factor_initial
     # if games_played > k_factor_scaling, set to league.k_factor_min
     k_factor = ndb.FloatProperty(required=True)
     games_played = ndb.IntegerProperty(default=0)
+    wins = ndb.IntegerProperty(default=0)
+    losses = ndb.IntegerProperty(default=0)
+    ties = ndb.IntegerProperty(default=0)
 
     @classmethod
     def generate_id(cls):
