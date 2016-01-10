@@ -2,6 +2,7 @@ import unittest
 import sys
 
 sys.path.insert(0, 'C:\\Program Files (x86)\\Google\\google_appengine')
+#sys.path.insert(0, 'Q:\\Applications\\GAE')
 sys.path.insert(0, 'src/')
 sys.path.insert(0, 'src/lib/')
 

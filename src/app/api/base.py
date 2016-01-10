@@ -1,3 +1,4 @@
+from google.appengine.datastore import datastore_query
 from flask import jsonify, make_response, Blueprint
 from flask_httpauth.flask_httpauth import HTTPBasicAuth
 from app.user.models import UserModel
@@ -20,6 +21,40 @@ def unauthorized():
     return make_response(jsonify({'error': 'Unauthorized access'}), 401)
 
 
+class AbstractApiArgument(object):
+    DEFAULTS = {
+        'type': str,
+        'required': False,
+        'location': 'json'
+    }
+
+    def __init__(self, name, **kwargs):
+        self.properties = {}
+        self.properties.update(self.DEFAULTS)
+        self.properties.update(kwargs)
+        self.name = name
+
+
+class StringArgument(AbstractApiArgument):
+    def __init__(self, name, **kwargs):
+        super(StringArgument, self).__init__(name, type=str, **kwargs)
+
+
+class IntegerArgument(AbstractApiArgument):
+    def __init__(self, name, **kwargs):
+        super(IntegerArgument, self).__init__(name, type=int, **kwargs)
+
+
+class FloatArgument(AbstractApiArgument):
+    def __init__(self, name, **kwargs):
+        super(FloatArgument, self).__init__(name, type=float, **kwargs)
+
+
+class DatastoreCursorArgument(AbstractApiArgument):
+    def __init__(self, name, **kwargs):
+        super(DatastoreCursorArgument, self).__init__(name, type=datastore_query.Cursor, **kwargs)
+
+
 class BaseAuthResource(Resource):
     """
     All resources which require authentication should extend this class.
@@ -31,20 +66,16 @@ class BaseAuthResource(Resource):
 
     API_USER = 'username'
 
-    REQUIRED_ARGS = []
-    OPTIONAL_ARGS = []
+    ARGUMENTS = frozenset([])
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
 
+        for argument in self.ARGUMENTS:
+            self.reqparse.add_argument(argument.name, **argument.properties)
+
         # get username
         self.reqparse.add_argument('username', type=str, required=True, location='authorization')
-
-        for arg_name in self.REQUIRED_ARGS:
-            self.reqparse.add_argument(arg_name, type=str, required=True, location='json')
-
-        for arg_name in self.OPTIONAL_ARGS:
-            self.reqparse.add_argument(arg_name, type=str, location='json')
 
         self.args = self.reqparse.parse_args()
         self.user = UserModel.build_key(user_id=self.args[self.API_USER]).get()

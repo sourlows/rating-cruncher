@@ -1,5 +1,5 @@
 from flask_restful import marshal, fields
-from app.api.base import BaseAuthResource
+from app.api.base import BaseAuthResource, StringArgument, FloatArgument
 from app.league.models import LeagueModel
 from app.participant.models import ParticipantModel, create_participant, delete_participant
 from app.participant.rating_calculator import RatingCalculator
@@ -13,23 +13,28 @@ PARTICIPANT_TEMPLATE = {
 
 
 class ParticipantListAPI(BaseAuthResource):
-    OPTIONAL_ARGS = ['name', 'rating']
+    ARGUMENTS = frozenset([
+        StringArgument('name'),
+        FloatArgument('rating'),
+    ])
 
     def get(self, league_id):
         participants = ParticipantModel.query(getattr(ParticipantModel, 'league_id') == league_id).fetch()
         return [marshal(participant, PARTICIPANT_TEMPLATE) for participant in participants]
 
     def post(self, league_id):
-        rating = self.args.get('rating')
-        if rating:
-            new_participant = create_participant(self.user, league_id, self.args.get('name'), float(rating))
+        if self.args.get('rating'):
+            new_participant = create_participant(self.user, league_id, self.args.get('name'), self.args.get('rating'))
         else:
             new_participant = create_participant(self.user, league_id, self.args.get('name'))
         return marshal(new_participant, PARTICIPANT_TEMPLATE)
 
 
 class ParticipantAPI(BaseAuthResource):
-    OPTIONAL_ARGS = ['name', 'rating', 'opponent_id', 'winner']
+    ARGUMENTS = frozenset([
+        StringArgument('opponent_id'),
+        StringArgument('winner'),
+    ])
 
     def get(self, league_id, participant_id):
         # pylint: disable=W0612,W0613
