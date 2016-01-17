@@ -17,7 +17,7 @@ from flask_restful import Api
 app = Flask(__name__)
 app.register_blueprint(USER_MODULE)
 app.register_blueprint(LEAGUE_MODULE)
-API = swagger.docs(Api(API_MODULE), apiVersion='0.1', basePath='http://localhost:8080')
+API = swagger.docs(Api(API_MODULE), apiVersion='0.1', basePath='http://localhost:8080', api_spec_url='/api/spec')
 API.add_resource(LeagueListAPI, '/league/')
 API.add_resource(LeagueAPI, '/league/<string:league_id>')
 API.add_resource(ParticipantListAPI, '/participant/<string:league_id>')
@@ -40,6 +40,11 @@ def before_request(*args, **kwargs):
         'is_logged_in': g.is_logged_in,
     }
 
+
+@app.route('/')
+def index():
+    """Return a friendly HTTP greeting."""
+    return render_template("public.html", **g.context)
 
 @app.route('/')
 def index():

@@ -1,6 +1,7 @@
 from app.league.exceptions import LeagueNotFoundException, InvalidRatingSchemeException
 from app.api.base import BaseAuthResource, StringArgument, IntegerArgument
 from app.league.models import LeagueModel, create_league, update_league, delete_league
+from flask.ext.restful_swagger import swagger
 from flask_restful import fields, marshal
 
 LEAGUE_TEMPLATE = {
@@ -23,6 +24,27 @@ class LeagueListAPI(BaseAuthResource):
         StringArgument('description'),
     ])
 
+    @swagger.operation(
+        notes='Some notes on the league api',
+        responseClass='League',
+        nickname='league',
+        parameters=[
+            {
+                "name": "league_id",
+                "description": "A unique indentifier for a league",
+                "required": True,
+                "allowMultiple": False,
+                "dataType": 'string',
+                "paramType": "body"
+            }
+        ],
+        responseMessages=[
+            {
+                "code": 200,
+                "message": "Returned all the stuff"
+            }
+        ]
+    )
     def get(self):
         """ return all leagues associated with the user """
         leagues = LeagueModel.query(ancestor=self.user.key).fetch()

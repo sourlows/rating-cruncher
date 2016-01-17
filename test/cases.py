@@ -160,7 +160,7 @@ class BaseFlaskTestCase(BaseGAETestCase):
 
     def setUp(self):
         super(BaseFlaskTestCase, self).setUp()
-        self.app = main.APP.test_client()
+        self.app = main.app.test_client()
         self.user = None
         self.league = None
         self.participant = None
