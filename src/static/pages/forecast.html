@@ -1,0 +1,16 @@
+<h3>Forecast for {{ city }}</h3>
+<hr / >
+<nav>
+	<h4 class="pull-left">Days:</h4>
+	<ul class="nav nav-pills">
+		<numerical-option val='{{ n }}' cur-val='{{ days }}' apply-active='isOptionActive(curVal, val)' ng-repeat="n in numOpts"></numerical-option>
+	</ul>
+</nav>
+<hr / >
+<div ng-repeat="w in weatherResult.list">
+	<div class="row">
+		<div class="col-md-12">
+			<weather-report weather-day='w' convert-to-standard='convertToCelsius(daytimeTemp)' convert-to-date='convertToDate(dt)' date-format='MMM d, y'></weather-report>
+		</div>
+	</div>
+</div>

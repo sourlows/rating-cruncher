@@ -1,0 +1,1 @@
+var ratingCruncherApp = angular.module('ratingCruncherApp', ['ngRoute', 'ngResource']);

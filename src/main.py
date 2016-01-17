@@ -44,7 +44,7 @@ def before_request(*args, **kwargs):
 @APP.route('/')
 def index():
     """Return a friendly HTTP greeting."""
-    return render_template("public.html", **g.context)
+    return render_template("index.html", **g.context)
 
 
 @APP.errorhandler(404)

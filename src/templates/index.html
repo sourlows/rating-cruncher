@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en-us" ng-app="ratingCruncherApp">
+	<head>
+		<title>Rating Cruncher - Scalable ELO/MMR Microservices</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta charset="UTF-8">
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular-route.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular-resource.js"></script>
+		<script src="/static/js/app.js"></script>
+		<script src="/static/js/routes.js"></script>
+		<script src="/static/js/services.js"></script>
+		<script src="/static/js/controllers.js"></script>
+		<script src="/static/js/directives.js"></script>
+	</head>
+	<body>
+		<header>
+			<nav class="navbar navbar-default">
+				<div class="container">
+					<div class="navbar-header">
+						<a class="navbar-brand" href="/">Rating Cruncher</a>
+					</div>
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#/"><i class="fa fa-home"></i> Home </a></li>
+						<li><a href="#/"><i class="fa"></i> API Explorer </a></li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+		<div class="container">
+			<div ng-view></div>
+		</div>
+	</body>
+</html>
