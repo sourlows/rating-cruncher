@@ -4,12 +4,12 @@ ratingCruncherApp.config(function ($routeProvider) {
 		templateUrl: '/static/pages/home.html',
 		controller: 'homeController'
 	})
-	.when('/forecast', {
-		templateUrl: '/static/pages/forecast.html',
-		controller: 'forecastController'
+	.when('/explorer', {
+		templateUrl: '/static/pages/explorer.html',
+		controller: 'explorerController'
 	})
-	.when('/forecast/:days', {
-		templateUrl: '/static/pages/forecast.html',
-		controller: 'forecastController'
+	.when('/explorer/:days', {
+		templateUrl: '/static/pages/explorer.html',
+		controller: 'explorerController'
 	});
 });

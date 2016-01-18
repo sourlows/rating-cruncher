@@ -1,0 +1,28 @@
+<h3>Api Explorer</h3>
+
+<hr />
+<nav>
+    <ul class="nav nav-pills">
+        <li role="presentation"><a href>Get all leagues</a></li>
+        <li role="presentation" class="active"><a href>Get one leagues</a></li>
+        <li role="presentation"><a href>Create a league</a></li>
+        <li role="presentation"><a href>Update a league</a></li>
+        <li role="presentation"><a href>Delete a league</a></li>
+    </ul>
+</nav>
+<hr />
+<div class="row">
+    <div class="col-md-3">
+        <form ng-submit="submit()">
+          <div class="form-group">
+            <label for="exampleInputEmail1">League Id</label>
+            <input type="text" class="form-control" id="league-id" placeholder="LG-12345">
+          </div>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+        <hr />
+    </div>
+    <div class="col-md-9">
+        <p>{{ responseText }}</p>
+    </div>
+</div>
