@@ -3,11 +3,7 @@
 <hr />
 <nav>
     <ul class="nav nav-pills">
-        <li role="presentation"><a href>Get all leagues</a></li>
-        <li role="presentation" class="active"><a href>Get one leagues</a></li>
-        <li role="presentation"><a href>Create a league</a></li>
-        <li role="presentation"><a href>Update a league</a></li>
-        <li role="presentation"><a href>Delete a league</a></li>
+        <li role="presentation" ng-class="{active: isSelected(endpoint.id)}" ng-click="setSelected(endpoint.id)" ng-repeat="endpoint in endpoints"><a href>{{ endpoint.description }}</a></li>
     </ul>
 </nav>
 <hr />

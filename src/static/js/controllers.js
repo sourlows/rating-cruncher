@@ -9,12 +9,69 @@ ratingCruncherApp.controller('explorerController', ['$scope', '$http', '$routePa
         {
             id: 0,
             url: '/league/',
+            method: 'GET',
+            description: 'Get all leagues',
+            route_parameters: [],
+            arguments: []
+        },
+        {
+            id: 1,
+            url: '/league/',
+            method: 'POST',
+            description: 'Create a  league',
             route_parameters: [
                 'League Id'
+            ],
+            arguments: [
+                'Name',
+                'Rating Scheme',
+                'Description',
+                'Sensitivity Factor (K)',
+                'Decay Rate of K'
             ]
+        },
+        {
+            id: 2,
+            url: '/league/:league_id',
+            method: 'GET',
+            description: 'Get a single league',
+            route_parameters: [
+                'League Id'
+            ],
+            arguments: []
+        },
+        {
+            id: 3,
+            url: '/league/:league_id',
+            method: 'PUT',
+            description: 'Update a single league',
+            route_parameters: [
+                'League Id'
+            ],
+            arguments: [
+                'Name',
+                'Rating Scheme',
+                'Description'
+            ]
+        },
+        {
+            id: 4,
+            url: '/league/:league_id',
+            method: 'DELETE',
+            description: 'Delete a single league',
+            route_parameters: [
+                'League Id'
+            ],
+            arguments: []
         }
     ];
-    debugger;
+    $scope.selectedEndpointId = null;
+    $scope.isSelected = function(endpointId){
+        return $scope.selectedEndpointId === endpointId;
+    };
+    $scope.setSelected = function(endpointId){
+        $scope.selectedEndpointId = endpointId;
+    };
 //	$scope.city = cityService.city;
 //	$scope.numOpts = ['2', '3', '4', '5', '6', '7'];
 //	$scope.days = $routeParams.days || '2';
