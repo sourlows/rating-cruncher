@@ -36,7 +36,7 @@ class LeagueModel(BaseModel):
     HIGH_SENSITIVITY_SETTING = 'High'
 
     k_sensitivity_choices = [LOW_SENSITIVITY_SETTING, MEDIUM_SENSITIVITY_SETTING, HIGH_SENSITIVITY_SETTING]
-    k_sensitivity = ndb.StringProperty(required=True, choices=k_sensitivity_choices)
+    k_sensitivity = ndb.StringProperty(required=True, choices=k_sensitivity_choices, default=MEDIUM_SENSITIVITY_SETTING)
 
     @classmethod
     def generate_id(cls):
@@ -66,7 +66,11 @@ def create_league(user, name, rating_scheme, k_sensitivity, k_factor_scaling, de
     key = LeagueModel.build_key(league_id, user.key)
 
     new_league = LeagueModel(key=key, league_id=league_id, name=name, rating_scheme=rating_scheme,
-                             description=description, k_sensitivity=k_sensitivity, k_factor_scaling=k_factor_scaling)
+                             description=description, k_factor_scaling=k_factor_scaling)
+    if k_sensitivity:
+        new_league.k_sensitivity = k_sensitivity
+    if k_factor_scaling:
+        new_league.k_factor_scaling = k_factor_scaling
     new_league.put()
 
     return new_league

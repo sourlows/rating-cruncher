@@ -16,7 +16,7 @@ LEAGUE_TEMPLATE = {
 
 class LeagueListAPI(BaseAuthResource):
     ARGUMENTS = frozenset([
-        StringArgument('name', required=True),
+        StringArgument('name'),
         StringArgument('rating_scheme'),
         StringArgument('k_sensitivity'),
         IntegerArgument('k_factor_scaling'),
